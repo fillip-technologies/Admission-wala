@@ -4,11 +4,13 @@
   "type": "module",
   "main": "src/server.js",
   "scripts": {
+    "seedAdmin": "node src/seed/seedAdmin.js",
     "dev": "nodemon src/server.js",
     "start": "node src/server.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",

@@ -11,12 +11,12 @@ const REFRESH_TOKEN_EXPIRES_IN =
 
 const isProd = process.env.NODE_ENV === "production";
 
-export const REFRESH_COOKIE_NAME = "refreshToken";
+;
 
-export const refreshCookieOptions = {
-  httpOnly: true, // not readable by JS — mitigates XSS token theft
+export const cookieOptions = {
+  httpOnly: true, 
   secure: isProd, // HTTPS-only in production
   sameSite: isProd ? "none" : "lax", // "none" needed for cross-site SPA + secure
-  maxAge: REFRESH_TOKEN_EXPIRES_IN * 1000, // ms
+  maxAge: REFRESH_TOKEN_EXPIRES_IN, 
   path: "/", // send on every route; narrow to /api/auth if you prefer
 };

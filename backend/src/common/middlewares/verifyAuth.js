@@ -1,7 +1,8 @@
-import asyncHandler from "../../utils/asyncHandler";
+import { asyncHandler } from "../../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
-import { ApiError } from "../../utils/ApiError";
-import STATUS_CODES from "../constants/statusCode";
+import { ApiError } from "../../utils/ApiError.js";
+import STATUS_CODES from "../constants/statusCode.js";
+import { User } from "../../modules/auth/models/auth.model.js";
 
 export const verifyJWT = asyncHandler(async (req, res, next) => {
   const token = req.cookies?.accessToken
@@ -22,6 +23,8 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
     );
   }
 
-  req.user = decoded;
+  req.user = decoded.id
   next();
 });
+
+

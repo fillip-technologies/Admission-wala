@@ -25,14 +25,13 @@ const userSchema = new mongoose.Schema(
     mobile_number: {
       type: String,
       required: true,
-      unique: true,
       maxlength: 12,
       minlength: 10,
       match: [/^[0-9]{10,12}$/, "Invalid mobile number"],
     },
     role: {
       type: String,
-      enum: ["student", "admin"],
+      enum: ["student", "admin", "counseller"],
       default: "student",
     },
     password: {
@@ -41,10 +40,22 @@ const userSchema = new mongoose.Schema(
       minlength: [6, "Password too weak!"],
       trim: true,
       select: false,
+    },
+    refreshToken: {
+      type: String,
+      select: false,
     }
   },
   { timestamps: true },
 );
+
+userSchema.set("toJSON", {
+  transform: (doc, ret) => {
+    delete ret.password;
+    delete ret.refreshToken;
+    return ret;
+  },
+});
 
 userSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
@@ -62,6 +73,13 @@ userSchema.methods.generateAccessToken = function () {
     { id: this._id, email: this.email, role: this.role },
     process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN },
+  );
+};
+userSchema.methods.generateRefreshToken = function () {
+  return jwt.sign(
+    { id: this._id, email: this.email, role: this.role },
+    process.env.REFRESH_TOKEN_SECRET,
+    { expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN },
   );
 };
 
