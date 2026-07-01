@@ -1,4 +1,4 @@
-// Central path registry — import these instead of hardcoding strings.
+
 export const PATHS = {
   HOME: "/",
   LOGIN: "/login",
@@ -16,5 +16,10 @@ export const PATHS = {
     ENQUIRY: "/admin/enquiry",
     COUNSELLERS: "/admin/counsellers",
   },
+
+  COUNSELLER : {
+    ROOT: "/counseller",
+
+  }
   
 };

@@ -1,12 +1,12 @@
 import express from 'express'
-import { getEnquiry, sendEnquiry } from '../controller/enquiry.controller.js';
-import { verifyJWT } from '../../../common/middlewares/verifyAuth.js';
+import { sendEnquiry } from '../controller/enquiry.controller.js';
+import { optionalAuth } from '../../../common/middlewares/optionAuth.js';
 
 const enquiryRouter = express.Router();
 
 
-enquiryRouter.post('/sendenquiry',verifyJWT, sendEnquiry);
+enquiryRouter.post('/sendenquiry',optionalAuth, sendEnquiry);
 
-enquiryRouter.get('/fetchenquiry', verifyJWT ,getEnquiry);
+
 
 export {enquiryRouter};

@@ -4,25 +4,42 @@ import { adminApi } from "./admin.api";
 const getError = (err) =>
   err?.response?.data?.message || err?.message || "Something went wrong";
 
-// Async Thunk
+// ─── Thunks ────────────────────────────────────────────────────────────────
+
 export const getAllStudents = createAsyncThunk(
   "admin/getAllStudents",
   async (_, { rejectWithValue }) => {
     try {
       const res = await adminApi.getAllStudents();
-
-      // Adjust this if your backend response is different
       return res.data.data;
     } catch (err) {
       return rejectWithValue(getError(err));
     }
-  }
+  },
 );
+
+export const getAllEnquiry = createAsyncThunk(
+  "admin/getAllEnquiry",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await adminApi.getAllEnquiry();
+      return res.data.data;
+    } catch (err) {
+      return rejectWithValue(getError(err));
+    }
+  },
+);
+
+// ─── Slice ─────────────────────────────────────────────────────────────────
 
 const initialState = {
   students: [],
-  loading: false,
-  error: null,
+  studentsLoading: false,
+  studentsError: null,
+
+  enquiries: [],
+  enquiriesLoading: false,
+  enquiriesError: null,
 };
 
 const adminSlice = createSlice({
@@ -30,36 +47,52 @@ const adminSlice = createSlice({
   initialState,
   reducers: {
     clearAdminError: (state) => {
-      state.error = null;
+      state.studentsError = null;
+      state.enquiriesError = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      // Pending
-      .addCase(getAllStudents.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+      // getAllStudents
+      .addCase(getAllStudents.pending, (s) => {
+        s.studentsLoading = true;
+        s.studentsError = null;
+      })
+      .addCase(getAllStudents.fulfilled, (s, a) => {
+        s.studentsLoading = false;
+        s.students = a.payload ?? [];
+      })
+      .addCase(getAllStudents.rejected, (s, a) => {
+        s.studentsLoading = false;
+        s.studentsError = a.payload;
       })
 
-      // Fulfilled
-      .addCase(getAllStudents.fulfilled, (state, action) => {
-        state.loading = false;
-        state.students = action.payload;
+      // getAllEnquiry
+      .addCase(getAllEnquiry.pending, (s) => {
+        s.enquiriesLoading = true;
+        s.enquiriesError = null;
       })
-
-      // Rejected
-      .addCase(getAllStudents.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+      .addCase(getAllEnquiry.fulfilled, (s, a) => {
+        s.enquiriesLoading = false;
+        s.enquiries = a.payload ?? [];
+      })
+      .addCase(getAllEnquiry.rejected, (s, a) => {
+        s.enquiriesLoading = false;
+        s.enquiriesError = a.payload;
       });
   },
 });
 
 export const { clearAdminError } = adminSlice.actions;
 
-// Selectors
-export const selectStudents = (state) => state.admin.students;
-export const selectAdminLoading = (state) => state.admin.loading;
-export const selectAdminError = (state) => state.admin.error;
+// ─── Selectors ─────────────────────────────────────────────────────────────
+
+export const selectStudents = (s) => s.admin.students;
+export const selectStudentsLoading = (s) => s.admin.studentsLoading;
+export const selectStudentsError = (s) => s.admin.studentsError;
+
+export const selectEnquiries = (s) => s.admin.enquiries;
+export const selectEnquiriesLoading = (s) => s.admin.enquiriesLoading;
+export const selectEnquiriesError = (s) => s.admin.enquiriesError;
 
 export default adminSlice.reducer;

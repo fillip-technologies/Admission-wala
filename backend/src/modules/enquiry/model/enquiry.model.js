@@ -37,6 +37,7 @@ const enquirySchema = new mongoose.Schema(
     role: {
         type: String,
         enum : ["student", 'guest'],
+        default: "guest"
     }
   },
   { timestamps: true },

@@ -16,14 +16,16 @@ export const sendEnquiry = asyncHandler(async (req, res) => {
   ) {
     throw new ApiError(STATUS_CODES.BAD_REQUEST, "Invalid data field");
   }
-
+ 
+  const user = await User.findById(req.user);
   const enq = await Enquiry.create({
-    user: req.user,
+    user:user.id,
     email: email,
     mobile_number: mobile_number,
     enquiryType: enquiryType,
     classType: classType,
     description: description,
+    role: user?.role || 'guest'
   });
 
   if (!enq)
@@ -49,10 +51,9 @@ export const getEnquiry = asyncHandler(async (req, res) => {
      console.log(user, user.role)
      throw new ApiError(STATUS_CODES.UNAUTHORIZED, "Unauthorized Access");
   }
-    console.log(user)
 
-  const enquiry = await Enquiry.find().populate().select("-mobile_number -enquiryType -classType -description");
-  console.log(enquiry)
+  const enquiry = await Enquiry.find().populate()
+ 
   res.status(STATUS_CODES.OK)
   .json(new ApiResponse(STATUS_CODES.OK, "all enquiries are fetched", enquiry));
 });

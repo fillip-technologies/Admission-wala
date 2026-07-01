@@ -1,164 +1,160 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useMemo, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   getAllStudents,
   selectStudents,
-  selectAdminLoading,
-  selectAdminError,
+  selectStudentsLoading,
+  selectStudentsError,
 } from "../../features/admin/admin.slice";
+import Spinner from "../../components/ui/Spinner";
+
+const COLS = ["Name", "Email", "Mobile", "Role", "Joined"];
 
 export default function Students() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const students = useAppSelector(selectStudents);
+  const loading  = useAppSelector(selectStudentsLoading);
+  const error    = useAppSelector(selectStudentsError);
 
-  const students = useSelector(selectStudents);
-  const loading = useSelector(selectAdminLoading);
-  const error = useSelector(selectAdminError);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    dispatch(getAllStudents());
-  }, [dispatch]);
+    // Only fetch if not already loaded (avoids redundant network call when
+    // coming back from another admin tab that already fetched the list).
+    if (students.length === 0) dispatch(getAllStudents());
+  }, [dispatch, students.length]);
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return students;
+    return students.filter(
+      (s) =>
+        s.name?.toLowerCase().includes(q) ||
+        s.email?.toLowerCase().includes(q) ||
+        s.mobile_number?.includes(q),
+    );
+  }, [students, search]);
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div>
+      {/* header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">
-            Students
-          </h1>
-          <p className="mt-1 text-gray-500">
-            Manage all registered students.
+          <h1 className="font-display text-2xl font-bold text-ink">Students</h1>
+          <p className="mt-1 text-sm text-muted">
+            {loading ? "Loading…" : `${students.length} total · ${filtered.length} shown`}
           </p>
         </div>
 
+        {/* search */}
+        <div className="relative w-full max-w-xs">
+          <svg
+            className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="M21 21l-4.35-4.35" />
+          </svg>
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by name, email, mobile…"
+            className="w-full rounded-xl border border-line bg-white py-2.5 pl-9 pr-3 text-sm text-ink outline-none transition placeholder:text-muted/60 focus:border-ink focus:ring-2 focus:ring-ink/10"
+          />
+        </div>
+      </div>
+
+      {/* refresh button */}
+      <div className="mt-4 flex justify-end">
         <button
           onClick={() => dispatch(getAllStudents())}
-          className="rounded-lg bg-blue-600 px-5 py-2 text-white transition hover:bg-blue-700"
+          disabled={loading}
+          className="inline-flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-2 text-sm font-semibold text-ink transition hover:border-ink/30 disabled:opacity-50"
         >
+          {loading ? <Spinner className="h-3.5 w-3.5" /> : (
+            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+              <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
+            </svg>
+          )}
           Refresh
         </button>
       </div>
 
-      {/* Stats */}
-      <div className="grid gap-5 md:grid-cols-3">
-        <div className="rounded-xl bg-white p-6 shadow">
-          <h3 className="text-sm text-gray-500">
-            Total Students
-          </h3>
-          <p className="mt-2 text-3xl font-bold">
-            {students.length}
-          </p>
-        </div>
-
-        <div className="rounded-xl bg-white p-6 shadow">
-          <h3 className="text-sm text-gray-500">
-            Verified
-          </h3>
-          <p className="mt-2 text-3xl font-bold text-green-600">
-            {
-              students.filter((s) => s.isVerified).length
-            }
-          </p>
-        </div>
-
-        <div className="rounded-xl bg-white p-6 shadow">
-          <h3 className="text-sm text-gray-500">
-            Pending
-          </h3>
-          <p className="mt-2 text-3xl font-bold text-yellow-500">
-            {
-              students.filter((s) => !s.isVerified).length
-            }
-          </p>
-        </div>
-      </div>
-
-      {/* Search */}
-      <div className="rounded-xl bg-white p-5 shadow">
-        <input
-          type="text"
-          placeholder="Search students..."
-          className="w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-500"
-        />
-      </div>
-
-      {/* Error */}
+      {/* error */}
       {error && (
-        <div className="rounded-lg bg-red-100 p-4 text-red-600">
+        <p className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
           {error}
-        </div>
+        </p>
       )}
 
-      {/* Loading */}
-      {loading ? (
-        <div className="rounded-xl bg-white p-20 text-center shadow">
-          <div className="text-lg font-medium">
-            Loading Students...
+      {/* table */}
+      <div className="mt-4 overflow-hidden rounded-2xl border border-line bg-white">
+        {loading && students.length === 0 ? (
+          <div className="grid place-items-center py-20">
+            <Spinner className="h-7 w-7" />
           </div>
-        </div>
-      ) : (
-        <div className="overflow-hidden rounded-xl bg-white shadow">
-          <table className="w-full">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-6 py-4 text-left">#</th>
-                <th className="px-6 py-4 text-left">Name</th>
-                <th className="px-6 py-4 text-left">Email</th>
-                <th className="px-6 py-4 text-left">Phone</th>
-                <th className="px-6 py-4 text-left">Status</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {students.length > 0 ? (
-                students.map((student, index) => (
-                  <tr
-                    key={student._id}
-                    className="border-t transition hover:bg-gray-50"
-                  >
-                    <td className="px-6 py-4">
-                      {index + 1}
-                    </td>
-
-                    <td className="px-6 py-4 font-medium">
-                      {student.name}
-                    </td>
-
-                    <td className="px-6 py-4">
-                      {student.email}
-                    </td>
-
-                    <td className="px-6 py-4">
-                      {student.phone}
-                    </td>
-
-                    <td className="px-6 py-4">
-                      {student.isVerified ? (
-                        <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
-                          Verified
-                        </span>
-                      ) : (
-                        <span className="rounded-full bg-yellow-100 px-3 py-1 text-sm font-medium text-yellow-700">
-                          Pending
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                ))
-              ) : (
+        ) : filtered.length === 0 ? (
+          <div className="py-20 text-center text-sm text-muted">
+            {search ? "No students match your search." : "No students registered yet."}
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-line text-sm">
+              <thead className="bg-canvas">
                 <tr>
-                  <td
-                    colSpan={5}
-                    className="py-16 text-center text-gray-500"
-                  >
-                    No students found.
-                  </td>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">
+                    #
+                  </th>
+                  {COLS.map((h) => (
+                    <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">
+                      {h}
+                    </th>
+                  ))}
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
+              </thead>
+              <tbody className="divide-y divide-line">
+                {filtered.map((s, i) => (
+                  <tr key={s._id} className="transition hover:bg-canvas/70">
+                    <td className="px-4 py-3 text-xs text-muted/60">{i + 1}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        {/* avatar initial */}
+                        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-ink font-semibold text-xs text-saffron">
+                          {s.name?.[0]?.toUpperCase() || "?"}
+                        </span>
+                        <span className="font-semibold text-ink">{s.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-muted">{s.email}</td>
+                    <td className="px-4 py-3 text-muted">{s.mobile_number}</td>
+                    <td className="px-4 py-3">
+                      <RoleBadge role={s.role} />
+                    </td>
+                    <td className="px-4 py-3 text-muted">{formatDate(s.createdAt)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
+}
+
+function RoleBadge({ role }) {
+  const styles = {
+    student: "bg-teal-deep/10 text-teal-deep",
+    admin:   "bg-saffron/15 text-saffron-600",
+  };
+  return (
+    <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize ${styles[role] || "bg-ink/10 text-ink"}`}>
+      {role || "—"}
+    </span>
+  );
+}
+
+function formatDate(iso) {
+  if (!iso) return "—";
+  return new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 }
