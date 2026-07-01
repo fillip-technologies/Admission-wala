@@ -53,6 +53,9 @@ export default function AuthModal({ open, mode, setMode, onClose }) {
     }
 
     const result = await dispatch(loginUser(form));
+    if(result?.payload?.role==='admin'){
+      
+    }
     if (loginUser.fulfilled.match(result)) onClose(); // login DOES set cookies
   };
 

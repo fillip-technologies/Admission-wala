@@ -1,9 +1,8 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Inter:wght@400;500;600;700&display=swap");
-@import "tailwindcss";
 
-/* Tailwind v4 theme — these become utilities automatically
-   (e.g. bg-ink, text-saffron, font-display) */
+/* Fonts load via <link> in index.html — NOT @import (Tailwind v4 inlines its
+   CSS, and any @import after it breaks the "@import must precede" rule). */
+
 @theme {
   --font-sans: "Inter", system-ui, sans-serif;
   --font-display: "Bricolage Grotesque", "Inter", sans-serif;
@@ -29,7 +28,6 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Respect reduced-motion preferences */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.001ms !important;

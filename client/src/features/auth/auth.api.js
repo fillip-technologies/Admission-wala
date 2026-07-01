@@ -1,12 +1,6 @@
-import api from "./axiosInstance";
+import api from "../../api/axiosInstance";
 
-/**
- * These map 1:1 to your auth.route.js:
- *   POST /auth/register
- *   POST /auth/login
- *   GET  /auth/me      (verifyJWT)
- *   POST /auth/logout  (verifyJWT)
- */
+// Maps 1:1 to backend auth.route.js
 export const authApi = {
   register: (payload) => api.post("/auth/register", payload),
   login: (payload) => api.post("/auth/login", payload),

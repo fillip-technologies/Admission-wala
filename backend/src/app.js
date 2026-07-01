@@ -4,6 +4,7 @@ import { authRouter } from "./modules/auth/routes/auth.route.js";
 import morgan from 'morgan'
 import cookieParser from "cookie-parser";
 import { enquiryRouter } from "./modules/enquiry/routes/enquiry.route.js";
+import { adminRouter } from "./modules/admin/routes/admin.routes.js";
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.get("/", (req, res) => {
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/enquiry', enquiryRouter);
+app.use('/api/v1/admin', adminRouter);
 
 
 

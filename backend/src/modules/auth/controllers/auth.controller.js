@@ -7,13 +7,16 @@ import { asyncHandler } from "../../../utils/asyncHandler.js";
 import { cookieOptions } from "../../../utils/cookieOptions.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, mobile_number, password } = req.body;
-
+  const { name, email, mobile_number, password, role } = req.body;
   if (
-    [name, email, mobile_number, password].some((field) => field?.trim() === "")
+    [name, email, mobile_number, password, role].some(
+      (field) => field?.trim() === "",
+    )
   ) {
     throw new ApiError(STATUS_CODES.BAD_REQUEST, "All fields are required");
   }
+  if (role !== "student" || role !== "counseller")
+    throw new ApiError(STATUS_CODES.BAD_GATEWAY, "You can create account here");
   if (password.length < 6)
     throw new ApiError(STATUS_CODES.BAD_GATEWAY, "Invalid crendentials");
   if (mobile_number.length < 10)
@@ -51,7 +54,9 @@ export const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(STATUS_CODES.BAD_REQUEST, "Invalid crendentilas");
   }
 
-  const user = await User.findOne({ email: email }).select("+password +refreshToken");
+  const user = await User.findOne({ email: email }).select(
+    "+password +refreshToken",
+  );
 
   if (!user)
     throw new ApiError(STATUS_CODES.NOT_FOUND, "Email is not registred");
@@ -65,7 +70,6 @@ export const loginUser = asyncHandler(async (req, res) => {
   const refreshToken = await user.generateRefreshToken();
   user.refreshToken = refreshToken;
   await user.save({ validateBeforeSave: false });
-  
 
   res
     .status(STATUS_CODES.OK)
@@ -74,25 +78,39 @@ export const loginUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(STATUS_CODES.CREATED, `Welcome ${user.name}`, user));
 });
 
-
 export const getMe = asyncHandler(async (req, res) => {
   const userId = req.user;
   const user = await User.findById(userId);
-  if(!user) throw new ApiError(STATUS_CODES.UNAUTHORIZED, "You are not authorized");
+  if (!user)
+    throw new ApiError(STATUS_CODES.UNAUTHORIZED, "You are not authorized");
 
-  res.status(STATUS_CODES.OK)
-  .json(new ApiResponse(STATUS_CODES.OK,"", user));
-})
+  res.status(STATUS_CODES.OK).json(new ApiResponse(STATUS_CODES.OK, "", user));
+});
 
-export const logOut = asyncHandler(async (req,res) => {
+export const logOut = asyncHandler(async (req, res) => {
   const userId = req.user;
-  const user = await User.findById(userId).select("+refreshToken")
-  if(!user) throw new ApiError(STATUS_CODES.NOT_FOUND, "Unaothozrized");
-  user.refreshToken=""
-  await user.save({validateBeforeSave:false});
+  const user = await User.findById(userId).select("+refreshToken");
+  if (!user) throw new ApiError(STATUS_CODES.NOT_FOUND, "Unaothozrized");
+  user.refreshToken = "";
+  await user.save({ validateBeforeSave: false });
   res
-  .clearCookie("accessToken", cookieOptions)
-  .clearCookie("refreshToken", cookieOptions)
-  .status(STATUS_CODES.OK)
-  .json(new ApiResponse(200, "Logged out successfully"))
-})
+    .clearCookie("accessToken", cookieOptions)
+    .clearCookie("refreshToken", cookieOptions)
+    .status(STATUS_CODES.OK)
+    .json(new ApiResponse(200, "Logged out successfully"));
+});
+
+export const getAllStudents = asyncHandler(async (req, res) => {
+  const userId = req.user;
+  const user = await User.findById(userId);
+  if (!user) throw new ApiError(STATUS_CODES.NOT_FOUND, "NOT Found");
+
+  if (user.role !== "admin" && user.role !== "counseller")
+    throw new ApiError(STATUS_CODES.NOT_FOUND, "Unaothozrized");
+
+  const student = await User.find({ role: "student" });
+
+  if (!student) throw new ApiError(STATUS_CODES.NOT_FOUND, "Unauthozrized");
+
+  res.status(200).json(new ApiResponse(STATUS_CODES.OK, "", student));
+});

@@ -1,21 +1,30 @@
 import axios from "axios";
 
 /**
- * Single axios instance for the whole app.
+ * Shared axios instance.
+ * withCredentials sends/receives the httpOnly auth cookies your backend sets
+ * on login (cookieParser + refreshToken). Required or /me and /logout 401.
  *
- * withCredentials: true is REQUIRED — your backend uses cookieParser + a
- * refreshToken, so the access/refresh tokens are sent as httpOnly cookies.
- * Without this flag the browser will not attach those cookies and /me + /logout
- * will always 401.
- *
- * Set VITE_API_URL in a .env file at the project root, e.g.
- *   VITE_API_URL=http://localhost:8000/api/v1
- * (change the port to whatever your Express server listens on)
+ * .env:  VITE_API_URL=http://localhost:3000/api/v1
  */
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1",
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000/api/v1",
   withCredentials: true,
   headers: { "Content-Type": "application/json" },
 });
+
+/**
+ * Central place to react to auth failures as the app grows.
+ * NOTE: /me returning 401 for a guest is normal, so we don't hard-redirect here.
+ * When you add a POST /auth/refresh route, this is where you'd queue the failed
+ * request, hit refresh, and retry. Left as a clearly-marked extension point.
+ */
+api.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    // if (error.response?.status === 401) { /* TODO: refresh-token retry */ }
+    return Promise.reject(error);
+  },
+);
 
 export default api;
