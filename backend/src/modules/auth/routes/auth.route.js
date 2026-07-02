@@ -15,4 +15,5 @@ authRouter.post("/logout", verifyJWT, logOut);
 
 
 
+
 export {authRouter}

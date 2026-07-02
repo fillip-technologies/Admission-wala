@@ -43,11 +43,7 @@ export default function AdminDashboard() {
       value: "—",
       color: "bg-teal-deep/10 text-teal-deep",
     },
-    {
-      label: "Counselling sessions",
-      value: "—",
-      color: "bg-ink/10 text-ink",
-    },
+   
   ];
 
   return (

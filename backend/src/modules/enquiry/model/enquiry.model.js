@@ -5,8 +5,8 @@ const enquirySchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Model name
-    //   required: true,
+      ref: "User",
+    
     },
     email: {
       type: String,

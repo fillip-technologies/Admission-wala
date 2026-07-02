@@ -7,7 +7,7 @@ import { asyncHandler } from "../../../utils/asyncHandler.js";
 import { cookieOptions } from "../../../utils/cookieOptions.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, mobile_number, password, role } = req.body;
+  const { name, email, mobile_number, password } = req.body;
   if (
     [name, email, mobile_number, password, role].some(
       (field) => field?.trim() === "",
@@ -15,8 +15,7 @@ export const registerUser = asyncHandler(async (req, res) => {
   ) {
     throw new ApiError(STATUS_CODES.BAD_REQUEST, "All fields are required");
   }
-  if (role !== "student" || role !== "counseller")
-    throw new ApiError(STATUS_CODES.BAD_GATEWAY, "You can create account here");
+
   if (password.length < 6)
     throw new ApiError(STATUS_CODES.BAD_GATEWAY, "Invalid crendentials");
   if (mobile_number.length < 10)
@@ -25,17 +24,16 @@ export const registerUser = asyncHandler(async (req, res) => {
   const existingUser = await User.findOne({ email: email });
 
   if (existingUser)
-    throw new ApiError(STATUS_CODES.BAD_REQUEST, "User already exists");
+    throw new ApiError(STATUS_CODES.CONFLICT, "User already exists");
 
   const user = await User.create({
     name: name,
     email: email,
     mobile_number: mobile_number,
     password: password,
+    role: "student"
   });
 
-  if (!user)
-    throw new ApiError(STATUS_CODES.FORBIDDEN, "Problem creating user");
   res
     .status(STATUS_CODES.CREATED)
     .json(
@@ -59,7 +57,7 @@ export const loginUser = asyncHandler(async (req, res) => {
   );
 
   if (!user)
-    throw new ApiError(STATUS_CODES.NOT_FOUND, "Email is not registred");
+    throw new ApiError(STATUS_CODES.NOT_FOUND, "Invalid crendentilas");
 
   const iscorrect = await user.isPasswordCorrect(password);
 
@@ -83,7 +81,7 @@ export const getMe = asyncHandler(async (req, res) => {
   const user = await User.findById(userId);
   if (!user)
     throw new ApiError(STATUS_CODES.UNAUTHORIZED, "You are not authorized");
-
+  
   res.status(STATUS_CODES.OK).json(new ApiResponse(STATUS_CODES.OK, "", user));
 });
 
