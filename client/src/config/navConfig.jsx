@@ -13,6 +13,11 @@ export const navConfig = {
     { to: PATHS.ADMIN.ENQUIRY,      label: "Enquiry",               icon: "inbox"       },
     { to: PATHS.ADMIN.COUNSELLERS,  label: "Counsellers",           icon: "counsellers" },
   ],
+  [ROLES.COUNSELLER]: [
+    { to: PATHS.COUNSELLER.ROOT,         label: "Overview",    end: true, icon: "grid"       },
+    { to: PATHS.COUNSELLER.STUDENTS,     label: "Students",              icon: "users"       },
+    { to: PATHS.COUNSELLER.ENQUIRY,      label: "Enquiry",               icon: "inbox"       },
+  ],
 };
 
 export const NavIcon = ({ name, className = "h-4 w-4" }) => {
