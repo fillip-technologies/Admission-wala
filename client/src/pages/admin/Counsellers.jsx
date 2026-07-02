@@ -34,6 +34,7 @@ export default function Counsellers() {
   const [search, setSearch] = useState("");
   const [notice, setNotice] = useState("");
   const [formError, setFormError] = useState("");
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   useEffect(() => {
     if (counsellers.length === 0) dispatch(getAllCounsellers());
@@ -58,9 +59,23 @@ export default function Counsellers() {
     form.password.trim() &&
     !creating;
 
+  const openCreateModal = () => {
+    setNotice("");
+    setFormError("");
+    dispatch(clearCreateCounsellerError());
+    setIsCreateOpen(true);
+  };
+
+  const closeCreateModal = () => {
+    if (creating) return;
+    setIsCreateOpen(false);
+    setForm(INITIAL_FORM);
+    setFormError("");
+    dispatch(clearCreateCounsellerError());
+  };
+
   const updateField = (field, value) => {
     setForm((current) => ({ ...current, [field]: value }));
-    setNotice("");
     setFormError("");
     if (createError) dispatch(clearCreateCounsellerError());
   };
@@ -93,6 +108,7 @@ export default function Counsellers() {
     try {
       await dispatch(createCounseller(payload)).unwrap();
       setForm(INITIAL_FORM);
+      setIsCreateOpen(false);
       setNotice("Counseller created and email sent.");
       dispatch(getAllCounsellers());
     } catch {
@@ -116,170 +132,199 @@ export default function Counsellers() {
           </p>
         </div>
 
-        <button
-          onClick={() => dispatch(getAllCounsellers())}
-          disabled={loading}
-          className="inline-flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-2 text-sm font-semibold text-ink transition hover:border-ink/30 disabled:opacity-50"
-        >
-          {loading ? <Spinner className="h-3.5 w-3.5" /> : <RefreshIcon />}
-          Refresh
-        </button>
-      </div>
-
-      <div className="mt-6 grid gap-5 lg:grid-cols-[minmax(280px,420px)_1fr]">
-        <form
-          onSubmit={handleSubmit}
-          className="rounded-2xl border border-line bg-white p-5"
-        >
-          <div>
-            <h2 className="font-display text-lg font-bold text-ink">
-              Create counseller
-            </h2>
-            <p className="mt-1 text-sm text-muted">
-              The login details will be mailed after creation.
-            </p>
-          </div>
-
-          <div className="mt-5 space-y-4">
-            <Field label="Name">
-              <input
-                value={form.name}
-                onChange={(e) => updateField("name", e.target.value)}
-                placeholder="Full name"
-                className={FIELD_INPUT_CLASS}
-              />
-            </Field>
-
-            <Field label="Email">
-              <input
-                type="email"
-                value={form.email}
-                onChange={(e) => updateField("email", e.target.value)}
-                placeholder="name@example.com"
-                className={FIELD_INPUT_CLASS}
-              />
-            </Field>
-
-            <Field label="Mobile number">
-              <input
-                type="tel"
-                value={form.mobile_number}
-                onChange={(e) => updateField("mobile_number", e.target.value)}
-                placeholder="9876543210"
-                className={FIELD_INPUT_CLASS}
-              />
-            </Field>
-
-            <Field label="Temporary password">
-              <div className="flex gap-2">
-                <input
-                  value={form.password}
-                  onChange={(e) => updateField("password", e.target.value)}
-                  placeholder="At least 6 characters"
-                  className={FIELD_INPUT_CLASS}
-                />
-                <button
-                  type="button"
-                  onClick={handleGeneratePassword}
-                  className="shrink-0 rounded-xl border border-line bg-white px-3 text-xs font-semibold text-ink transition hover:border-ink/30"
-                >
-                  Generate
-                </button>
-              </div>
-            </Field>
-          </div>
-
-          {(formError || createError) && (
-            <p className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
-              {formError || createError}
-            </p>
-          )}
-
-          {notice && (
-            <p className="mt-4 rounded-xl bg-teal-deep/10 px-4 py-3 text-sm font-medium text-teal-deep">
-              {notice}
-            </p>
-          )}
-
+        <div className="flex flex-wrap items-center gap-2">
           <button
-            type="submit"
-            disabled={!canSubmit}
-            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-4 py-3 text-sm font-semibold text-white transition hover:bg-ink-soft disabled:cursor-not-allowed disabled:opacity-50"
+            onClick={openCreateModal}
+            className="inline-flex items-center gap-2 rounded-xl bg-ink px-4 py-2 text-sm font-semibold text-white transition hover:bg-ink-soft"
           >
-            {creating && <Spinner className="h-4 w-4 border-white/30 border-t-white" />}
+            <PlusIcon />
             Create counseller
           </button>
-        </form>
 
-        <div>
-          <div className="relative">
-            <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by name, email, mobile..."
-              className="w-full rounded-xl border border-line bg-white py-2.5 pl-9 pr-3 text-sm text-ink outline-none transition placeholder:text-muted/60 focus:border-ink focus:ring-2 focus:ring-ink/10"
-            />
-          </div>
-
-          {error && (
-            <p className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
-              {error}
-            </p>
-          )}
-
-          <div className="mt-4 overflow-hidden rounded-2xl border border-line bg-white">
-            {loading && counsellers.length === 0 ? (
-              <div className="grid place-items-center py-20">
-                <Spinner className="h-7 w-7" />
-              </div>
-            ) : filtered.length === 0 ? (
-              <div className="py-20 text-center text-sm text-muted">
-                {search ? "No counsellers match your search." : "No counsellers created yet."}
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-line text-sm">
-                  <thead className="bg-canvas">
-                    <tr>
-                      {["#", "Name", "Email", "Mobile", "Joined"].map((h) => (
-                        <th
-                          key={h}
-                          className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted"
-                        >
-                          {h}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-line">
-                    {filtered.map((c, i) => (
-                      <tr key={c._id} className="transition hover:bg-canvas/70">
-                        <td className="px-4 py-3 text-xs text-muted/60">
-                          {i + 1}
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-3">
-                            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-ink text-xs font-semibold text-saffron">
-                              {c.name?.[0]?.toUpperCase() || "?"}
-                            </span>
-                            <span className="font-semibold text-ink">{c.name}</span>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 text-muted">{c.email}</td>
-                        <td className="px-4 py-3 text-muted">{c.mobile_number}</td>
-                        <td className="whitespace-nowrap px-4 py-3 text-muted">
-                          {formatDate(c.createdAt)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+          <button
+            onClick={() => dispatch(getAllCounsellers())}
+            disabled={loading}
+            className="inline-flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-2 text-sm font-semibold text-ink transition hover:border-ink/30 disabled:opacity-50"
+          >
+            {loading ? <Spinner className="h-3.5 w-3.5" /> : <RefreshIcon />}
+            Refresh
+          </button>
         </div>
       </div>
+
+      {notice && (
+        <p className="mt-4 rounded-xl bg-teal-deep/10 px-4 py-3 text-sm font-medium text-teal-deep">
+          {notice}
+        </p>
+      )}
+
+      <div className="mt-6">
+        <div className="relative">
+          <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by name, email, mobile..."
+            className="w-full rounded-xl border border-line bg-white py-2.5 pl-9 pr-3 text-sm text-ink outline-none transition placeholder:text-muted/60 focus:border-ink focus:ring-2 focus:ring-ink/10"
+          />
+        </div>
+
+        {error && (
+          <p className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+            {error}
+          </p>
+        )}
+
+        <div className="mt-4 overflow-hidden rounded-2xl border border-line bg-white">
+          {loading && counsellers.length === 0 ? (
+            <div className="grid place-items-center py-20">
+              <Spinner className="h-7 w-7" />
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="py-20 text-center text-sm text-muted">
+              {search ? "No counsellers match your search." : "No counsellers created yet."}
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-line text-sm">
+                <thead className="bg-canvas">
+                  <tr>
+                    {["#", "Name", "Email", "Mobile", "Joined"].map((h) => (
+                      <th
+                        key={h}
+                        className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted"
+                      >
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-line">
+                  {filtered.map((c, i) => (
+                    <tr key={c._id} className="transition hover:bg-canvas/70">
+                      <td className="px-4 py-3 text-xs text-muted/60">
+                        {i + 1}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-ink text-xs font-semibold text-saffron">
+                            {c.name?.[0]?.toUpperCase() || "?"}
+                          </span>
+                          <span className="font-semibold text-ink">{c.name}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-muted">{c.email}</td>
+                      <td className="px-4 py-3 text-muted">{c.mobile_number}</td>
+                      <td className="whitespace-nowrap px-4 py-3 text-muted">
+                        {formatDate(c.createdAt)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {isCreateOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 px-4 py-6"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) closeCreateModal();
+          }}
+        >
+          <form
+            onSubmit={handleSubmit}
+            className="max-h-full w-full max-w-lg overflow-y-auto rounded-2xl border border-line bg-white p-5 shadow-xl"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="font-display text-lg font-bold text-ink">
+                  Create counseller
+                </h2>
+                <p className="mt-1 text-sm text-muted">
+                  The login details will be mailed after creation.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={closeCreateModal}
+                disabled={creating}
+                aria-label="Close form"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-line text-ink transition hover:border-ink/30 hover:bg-canvas disabled:opacity-50"
+              >
+                <CloseIcon />
+              </button>
+            </div>
+
+            <div className="mt-5 space-y-4">
+              <Field label="Name">
+                <input
+                  value={form.name}
+                  onChange={(e) => updateField("name", e.target.value)}
+                  placeholder="Full name"
+                  className={FIELD_INPUT_CLASS}
+                />
+              </Field>
+
+              <Field label="Email">
+                <input
+                  type="email"
+                  value={form.email}
+                  onChange={(e) => updateField("email", e.target.value)}
+                  placeholder="name@example.com"
+                  className={FIELD_INPUT_CLASS}
+                />
+              </Field>
+
+              <Field label="Mobile number">
+                <input
+                  type="tel"
+                  value={form.mobile_number}
+                  onChange={(e) => updateField("mobile_number", e.target.value)}
+                  placeholder="9876543210"
+                  className={FIELD_INPUT_CLASS}
+                />
+              </Field>
+
+              <Field label="Temporary password">
+                <div className="flex gap-2">
+                  <input
+                    value={form.password}
+                    onChange={(e) => updateField("password", e.target.value)}
+                    placeholder="At least 6 characters"
+                    className={FIELD_INPUT_CLASS}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleGeneratePassword}
+                    className="shrink-0 rounded-xl border border-line bg-white px-3 text-xs font-semibold text-ink transition hover:border-ink/30"
+                  >
+                    Generate
+                  </button>
+                </div>
+              </Field>
+            </div>
+
+            {(formError || createError) && (
+              <p className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                {formError || createError}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={!canSubmit}
+              className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-4 py-3 text-sm font-semibold text-white transition hover:bg-ink-soft disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {creating && <Spinner className="h-4 w-4 border-white/30 border-t-white" />}
+              Create counseller
+            </button>
+          </form>
+        </div>
+      )}
     </div>
   );
 }
@@ -319,6 +364,21 @@ function formatDate(iso) {
   });
 }
 
+function PlusIcon() {
+  return (
+    <svg
+      className="h-3.5 w-3.5"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+    >
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  );
+}
+
 function RefreshIcon() {
   return (
     <svg
@@ -330,6 +390,21 @@ function RefreshIcon() {
       strokeLinecap="round"
     >
       <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg
+      className="h-4 w-4"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+    >
+      <path d="M18 6 6 18M6 6l12 12" />
     </svg>
   );
 }
