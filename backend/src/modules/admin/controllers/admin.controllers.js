@@ -32,6 +32,7 @@ export const createCounsellers = asyncHandler(async (req, res) => {
     mobile_number,
     password,
     role: "counseller",
+    isEmailVerified: true,
   });
 
   await transporter.sendMail({
