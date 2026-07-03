@@ -42,7 +42,7 @@ export default function Home() {
               </h1>
 
               <p className="mt-5 text-lg leading-relaxed text-muted">
-                Admission Walla helps you complete Class 10th and 12th through recognised
+                Shri Admission Gurukul helps you complete Class 10th and 12th through recognised
                 open boards — with a counsellor guiding every step, from course choice to
                 your certificate.
               </p>

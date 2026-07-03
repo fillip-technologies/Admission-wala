@@ -35,8 +35,13 @@ const admissionSchema = new mongoose.Schema(
     },
     board: {
       type: String,
-      enum: ["NIOS", "BBOSE", "BOSSE"],
+      enum: ["NIOS", "BBOSE", "BOSSE", "Other"],
       required: true,
+    },
+    // Free-text board name, used when board === "Other".
+    customBoard: {
+      type: String,
+      trim: true,
     },
     classType: {
       type: String,

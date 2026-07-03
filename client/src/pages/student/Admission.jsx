@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { admissionApi } from "../../features/admission/admission.api";
 import { boards, courses } from "../../data/courses";
 import { ADMISSION_STEPS, STATUS_LABEL, stepIndex } from "../../features/admission/statuses";
+import Field from "../../components/ui/Field";
 import Button from "../../components/ui/Button";
 import Spinner from "../../components/ui/Spinner";
 
@@ -19,7 +20,7 @@ function Timeline({ admission }) {
     <div className="rounded-2xl border border-line bg-white p-6">
       <div className="flex items-center justify-between">
         <h2 className="font-display text-lg font-bold text-ink">
-          {admission.board} · Class {admission.classType}
+          {admission.board === "Other" ? admission.customBoard : admission.board} · Class {admission.classType}
           {admission.course ? ` · ${admission.course}` : ""}
         </h2>
         <span
@@ -97,6 +98,7 @@ export default function Admission() {
 
   const [form, setForm] = useState({
     board: "",
+    customBoard: "",
     classType: "",
     course: presetCourse || "",
   });
@@ -136,10 +138,15 @@ export default function Admission() {
       setError("Please select a board and class.");
       return;
     }
+    if (form.board === "Other" && !form.customBoard.trim()) {
+      setError("Please enter your board name.");
+      return;
+    }
     setSubmitting(true);
     try {
       const fd = new FormData();
       fd.append("board", form.board);
+      if (form.board === "Other") fd.append("customBoard", form.customBoard.trim());
       fd.append("classType", form.classType);
       if (form.course) fd.append("course", form.course);
       files.forEach((file) => fd.append("documents", file));
@@ -190,8 +197,19 @@ export default function Admission() {
                       {b.code} — {b.name}
                     </option>
                   ))}
+                  <option value="Other">Other (enter your board)</option>
                 </select>
               </label>
+
+              {form.board === "Other" && (
+                <Field
+                  label="Your board name"
+                  name="customBoard"
+                  value={form.customBoard}
+                  onChange={onChange}
+                  placeholder="e.g. CBSE, State Board…"
+                />
+              )}
 
               <label className="block">
                 <span className="mb-1 block text-xs font-semibold text-ink">Class</span>

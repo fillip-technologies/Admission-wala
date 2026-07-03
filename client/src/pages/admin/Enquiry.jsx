@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   getAllEnquiry,
@@ -9,7 +9,7 @@ import {
 import Spinner from "../../components/ui/Spinner";
 
 // Matches your enquirySchema enums exactly
-const ENQUIRY_TYPES = ["All", "NIOS", "BBOSE", "BOSSE"];
+const ENQUIRY_TYPES = ["All", "NIOS", "BBOSE", "BOSSE", "Other"];
 const CLASS_TYPES   = ["All", "10th", "12th"];
 const ROLES         = ["All", "student", "guest"];
 
@@ -113,7 +113,7 @@ export default function Enquiry() {
       )}
 
       {/* ── table ── */}
-      <div className="mt-4 overflow-hidden rounded-2xl border border-line bg-white">
+      <div className="mt-4 overflow-hidden rounded-2xl border border-line bg-white shadow-sm">
         {loading && enquiries.length === 0 ? (
           <div className="grid place-items-center py-20">
             <Spinner className="h-7 w-7" />
@@ -125,10 +125,10 @@ export default function Enquiry() {
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-line text-sm">
-              <thead className="bg-canvas">
+              <thead className="border-b border-line bg-canvas">
                 <tr>
                   {["#", "Contact", "Board", "Class", "Role", "Description", "Date", ""].map((h) => (
-                    <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted whitespace-nowrap">
+                    <th key={h} className="px-4 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted whitespace-nowrap">
                       {h}
                     </th>
                   ))}
@@ -136,51 +136,59 @@ export default function Enquiry() {
               </thead>
               <tbody className="divide-y divide-line">
                 {filtered.map((e, i) => (
-                  <>
-                    <tr key={e._id} className="transition hover:bg-canvas/70">
-                      <td className="px-4 py-3 text-xs text-muted/60">{i + 1}</td>
+                  <Fragment key={e._id}>
+                    <tr className="transition hover:bg-canvas/60">
+                      <td className="px-4 py-4 text-xs font-medium text-muted/60">{i + 1}</td>
 
                       {/* contact — email + mobile_number (your actual schema fields) */}
-                      <td className="px-4 py-3">
-                        <p className="font-semibold text-ink">{e.email}</p>
-                        <p className="mt-0.5 text-xs text-muted">{e.mobile_number || "—"}</p>
-                        {/* show linked user's name if populated by backend */}
-                        {e.user?.name && (
-                          <p className="mt-0.5 text-xs text-indigo-deep">{e.user.name}</p>
-                        )}
+                      <td className="px-4 py-4">
+                        <div className="flex items-center gap-3">
+                          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-ink text-xs font-bold text-saffron">
+                            {(e.user?.name || e.email || "?")[0]?.toUpperCase()}
+                          </span>
+                          <div className="min-w-0">
+                            {e.user?.name && (
+                              <p className="truncate font-semibold text-ink">{e.user.name}</p>
+                            )}
+                            <p className={`truncate ${e.user?.name ? "text-xs text-muted" : "font-semibold text-ink"}`}>
+                              {e.email}
+                            </p>
+                            <p className="mt-0.5 text-xs text-muted">{e.mobile_number || "—"}</p>
+                          </div>
+                        </div>
                       </td>
 
                       {/* enquiryType */}
-                      <td className="px-4 py-3">
-                        <BoardBadge type={e.enquiryType} />
+                      <td className="px-4 py-4">
+                        <BoardBadge type={e.enquiryType === "Other" ? (e.customBoard || "Other") : e.enquiryType} />
                       </td>
 
                       {/* classType */}
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-4">
                         <ClassBadge type={e.classType} />
                       </td>
 
                       {/* role (student | guest) */}
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-4">
                         <RoleBadge role={e.role} />
                       </td>
 
                       {/* description — truncated, expandable */}
-                      <td className="max-w-[200px] px-4 py-3 text-muted">
+                      <td className="max-w-[240px] px-4 py-4 text-muted">
                         <p className="line-clamp-2">{e.description || "—"}</p>
                       </td>
 
                       {/* createdAt */}
-                      <td className="px-4 py-3 text-muted whitespace-nowrap">
+                      <td className="px-4 py-4 text-muted whitespace-nowrap">
                         {formatDate(e.createdAt)}
                       </td>
 
                       {/* expand toggle (shows full description) */}
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-4 text-right">
                         {e.description && (
                           <button
                             onClick={() => setExpanded(expanded === e._id ? null : e._id)}
-                            className="text-xs font-semibold text-saffron-600 hover:underline"
+                            className="rounded-lg border border-line px-2.5 py-1 text-xs font-semibold text-saffron-600 transition hover:border-saffron-600/40"
                           >
                             {expanded === e._id ? "Less" : "More"}
                           </button>
@@ -190,14 +198,16 @@ export default function Enquiry() {
 
                     {/* expanded description row */}
                     {expanded === e._id && (
-                      <tr key={`${e._id}-expanded`} className="bg-canvas/50">
+                      <tr className="bg-canvas/50">
                         <td />
-                        <td colSpan={7} className="px-4 py-3">
-                          <p className="text-sm text-ink">{e.description}</p>
+                        <td colSpan={7} className="px-4 pb-4">
+                          <div className="rounded-xl border border-line bg-white p-3 text-sm text-ink">
+                            {e.description}
+                          </div>
                         </td>
                       </tr>
                     )}
-                  </>
+                  </Fragment>
                 ))}
               </tbody>
             </table>

@@ -9,10 +9,10 @@ export default function Sidebar({ role, onNavigate }) {
     <div className="flex h-full flex-col">
       <NavLink to={PATHS.HOME} className="flex items-center gap-2 px-5 py-5">
         <span className="grid h-8 w-8 place-items-center rounded-lg bg-ink text-sm font-bold text-saffron">
-          AW
+          SAG
         </span>
         <span className="font-display text-lg font-bold tracking-tight text-ink">
-          Admission<span className="text-saffron">Walla</span>
+          Shri Admission <span className="text-saffron">Gurukul</span>
         </span>
       </NavLink>
 

@@ -24,8 +24,13 @@ const enquirySchema = new mongoose.Schema(
     },
     enquiryType: {
       type: String,
-      enum: ["NIOS", "BBOSE", "BOSSE"],
+      enum: ["NIOS", "BBOSE", "BOSSE", "Other"],
       default: "NIOS",
+    },
+    // Free-text board name, used when enquiryType === "Other".
+    customBoard: {
+      type: String,
+      trim: true,
     },
     classType: {
       type: String,

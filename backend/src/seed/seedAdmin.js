@@ -27,7 +27,7 @@ const run = async () => {
 
   await seedAdmin(
     "Admin",
-    "admin@gmail.com",
+    "singhalgovind305@gmail.com",
     "6280381723",
     "Admin@123"
   );

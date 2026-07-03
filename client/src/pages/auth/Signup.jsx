@@ -32,7 +32,7 @@ export default function Signup() {
   return (
     <div>
       <h1 className="font-display text-2xl font-bold text-ink">Create your account</h1>
-      <p className="mt-1 text-sm text-muted">Start your admission journey with Admission Walla.</p>
+      <p className="mt-1 text-sm text-muted">Start your admission journey with Shri Admission Gurukul.</p>
 
       <div className="mt-5 space-y-3">
         <Field label="Full name" name="name" value={form.name} onChange={onChange} placeholder="Govind Kumar" />

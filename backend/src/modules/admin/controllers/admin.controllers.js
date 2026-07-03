@@ -53,7 +53,7 @@ Temporary password: ${password}
 Please login and change your password after your first sign in.
 
 Regards,
-Admission Wala`,
+Shri Admission Gurukul`,
   });
   
   res.status(STATUS_CODES.CREATED)

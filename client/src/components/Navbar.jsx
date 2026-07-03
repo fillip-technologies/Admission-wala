@@ -19,10 +19,10 @@ export default function Navbar() {
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link to={PATHS.HOME} className="flex items-center gap-2">
           <span className="grid h-8 w-8 place-items-center rounded-lg bg-ink text-sm font-bold text-saffron">
-            AW
+            SAG
           </span>
           <span className="font-display text-lg font-bold tracking-tight text-ink">
-            Admission<span className="text-saffron">Walla</span>
+            Shri Admission <span className="text-saffron">Gurukul</span>
           </span>
         </Link>
 

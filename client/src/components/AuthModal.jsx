@@ -94,7 +94,7 @@ export default function AuthModal({ open, mode, setMode, onClose }) {
         </h2>
         <p className="mt-1 text-sm text-muted">
           {mode === "register"
-            ? "Start your admission journey with Admission Walla."
+            ? "Start your admission journey with Shri Admission Gurukul."
             : "Log in to track your admission and counselling."}
         </p>
 

@@ -68,7 +68,7 @@ export default function Home() {
               </h1>
 
               <p className="mt-5 text-lg leading-relaxed text-muted">
-                Admission Walla helps you complete Class 10th and 12th through
+                Shri Admission Gurukul helps you complete Class 10th and 12th through
                 recognised open boards — with a counsellor guiding every step,
                 from course choice to your certificate.
               </p>
@@ -194,13 +194,19 @@ export default function Home() {
       {/* ---------- FOOTER ---------- */}
       <footer className="border-t border-line">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <p className="font-display font-bold text-ink">
-            Admission<span className="text-saffron">Walla</span>
-          </p>
-          <p className="text-sm text-muted">
-            © {new Date().getFullYear()} Fillip Technologies Pvt. Ltd. · Admission
-            &amp; Counselling Portal
-          </p>
+          <div>
+            <p className="font-display font-bold text-ink">
+              Shri Admission <span className="text-saffron">Gurukul</span>
+            </p>
+            <p className="mt-1 text-xs text-muted">A unit of Tribac Blue</p>
+          </div>
+          <div className="text-sm text-muted sm:text-right">
+            <p>
+              © {new Date().getFullYear()} Fillip Technologies Pvt. Ltd. · Admission
+              &amp; Counselling Portal
+            </p>
+            <p className="mt-1 text-xs">Made by Fillip Technologies</p>
+          </div>
         </div>
       </footer>
 

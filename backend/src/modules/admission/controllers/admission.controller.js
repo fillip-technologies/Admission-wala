@@ -6,17 +6,19 @@ import { User } from "../../auth/models/auth.model.js";
 import { uploadToCloudinary } from "../../../utils/cloudinaryUpload.js";
 import { Admission, ADMISSION_STATUSES } from "../models/admission.model.js";
 
-const BOARDS = ["NIOS", "BBOSE", "BOSSE"];
+const BOARDS = ["NIOS", "BBOSE", "BOSSE", "Other"];
 const CLASS_TYPES = ["10th", "12th"];
 
 
 export const createAdmission = asyncHandler(async (req, res) => {
-  const { board, classType, course } = req.body;
+  const { board, classType, course, customBoard } = req.body;
 
   if (!BOARDS.includes(board))
     throw new ApiError(STATUS_CODES.BAD_REQUEST, "Please select a valid board");
   if (!CLASS_TYPES.includes(classType))
     throw new ApiError(STATUS_CODES.BAD_REQUEST, "Please select a valid class");
+  if (board === "Other" && (typeof customBoard !== "string" || customBoard.trim() === ""))
+    throw new ApiError(STATUS_CODES.BAD_REQUEST, "Please enter your board name");
 
 
   const existing = await Admission.findOne({
@@ -43,6 +45,7 @@ export const createAdmission = asyncHandler(async (req, res) => {
   const admission = await Admission.create({
     user: req.user,
     board,
+    customBoard: board === "Other" ? customBoard.trim() : undefined,
     classType,
     course,
     documents,

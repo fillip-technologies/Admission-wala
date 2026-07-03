@@ -10,12 +10,13 @@ export default function AuthLayout() {
       <div className="w-full max-w-md">
         <Link to={PATHS.HOME} className="mb-6 flex items-center justify-center gap-2">
           <span className="grid h-8 w-8 place-items-center rounded-lg bg-ink text-sm font-bold text-saffron">
-            AW
+            SAG
           </span>
           <span className="font-display text-lg font-bold tracking-tight text-ink">
-            Admission<span className="text-saffron">Walla</span>
+            Shri Admission <span className="text-saffron">Gurukul</span>
           </span>
         </Link>
+        <p className="mb-6 -mt-4 text-center text-xs text-muted">A unit of Tribac Blue</p>
 
         <div className="rounded-2xl border border-line bg-white p-6 shadow-sm sm:p-7">
           <Suspense fallback={<PageLoader />}>

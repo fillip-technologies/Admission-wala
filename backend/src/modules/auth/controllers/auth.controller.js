@@ -11,12 +11,12 @@ import { issueOtp, verifyOtp } from "../../../utils/otp.utils.js";
 // Simple branded OTP email body.
 const otpEmail = (name, otp, purpose) => `
   <div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto;">
-    <h2>Admission Walla</h2>
+    <h2>Shri Admission Gurukul</h2>
     <p>Hello ${name || "there"},</p>
     <p>Your one-time password (OTP) for <strong>${purpose}</strong> is:</p>
     <p style="font-size: 28px; font-weight: bold; letter-spacing: 4px;">${otp}</p>
     <p>This code is valid for 10 minutes. Please do not share it with anyone.</p>
-    <p>Regards,<br/>Admission Walla</p>
+    <p>Regards,<br/>Shri Admission Gurukul</p>
   </div>
 `;
 
@@ -51,7 +51,7 @@ export const registerUser = asyncHandler(async (req, res) => {
   const otp = await issueOtp({ email: user.email, purpose: "email_verification" });
   await sendMail({
     to: user.email,
-    subject: "Verify your email - Admission Walla",
+    subject: "Verify your email - Shri Admission Gurukul",
     html: otpEmail(user.name, otp, "email verification"),
   });
 
@@ -106,7 +106,7 @@ export const resendOtp = asyncHandler(async (req, res) => {
   const otp = await issueOtp({ email: user.email, purpose: "email_verification" });
   await sendMail({
     to: user.email,
-    subject: "Verify your email - Admission Walla",
+    subject: "Verify your email - Shri Admission Gurukul",
     html: otpEmail(user.name, otp, "email verification"),
   });
 
@@ -201,7 +201,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   const otp = await issueOtp({ email: user.email, purpose: "password_reset" });
   await sendMail({
     to: user.email,
-    subject: "Reset your password - Admission Walla",
+    subject: "Reset your password - Shri Admission Gurukul",
     html: otpEmail(user.name, otp, "password reset"),
   });
 
