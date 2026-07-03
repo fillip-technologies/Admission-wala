@@ -1,6 +1,6 @@
 import STATUS_CODES from "../../../common/constants/statusCode.js";
-import { ApiError } from "../../../utils/ApiError.js";
-import { ApiResponse } from "../../../utils/ApiResponse.js";
+import { ApiError } from "../../../utils/apiError.js";
+import { ApiResponse } from "../../../utils/apiResponse.js";
 import { asyncHandler } from "../../../utils/asyncHandler.js";
 import { User } from "../../auth/models/auth.model.js";
 import { Enquiry } from "../model/enquiry.model.js";

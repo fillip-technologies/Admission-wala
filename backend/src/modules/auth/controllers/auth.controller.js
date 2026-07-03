@@ -1,15 +1,18 @@
 import STATUS_CODES from "../../../common/constants/statusCode.js";
-import { ApiError } from "../../../utils/ApiError.js";
+import { ApiError } from "../../../utils/apiError.js";
 
 import { User } from "../models/auth.model.js";
-import { ApiResponse } from "../../../utils/ApiResponse.js";
+import { ApiResponse } from "../../../utils/apiResponse.js";
 import { asyncHandler } from "../../../utils/asyncHandler.js";
 import { cookieOptions } from "../../../utils/cookieOptions.js";
+import { transporter } from "../../../configs/mail.js";
+import { sendMail } from "../../../utils/sendMail.js";
+import { genrateOtp } from "../../../utils/otp.utils.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
   const { name, email, mobile_number, password } = req.body;
   if (
-    [name, email, mobile_number, password, role].some(
+    [name, email, mobile_number, password].some(
       (field) => field?.trim() === "",
     )
   ) {
@@ -112,3 +115,26 @@ export const getAllStudents = asyncHandler(async (req, res) => {
 
   res.status(200).json(new ApiResponse(STATUS_CODES.OK, "", student));
 });
+
+export const forgotPassword = asyncHandler(async (req, res) => {
+  const {email} = req.body;
+  if(email.trim()==='') throw new ApiError(STATUS_CODES.BAD_REQUEST, 'Please enter a mail');
+
+  const user = await User.findOne({email:email});
+
+  if(!user) throw new ApiError(STATUS_CODES.NOT_FOUND, "No user exist with this email");
+
+  const otp = genrateOtp();
+  await sendMail({
+    to: user.email,
+    subject: "One time otp for password update",
+    html: `
+      <h2>This is your one time password (OTP):</h2>
+      <p>${otp}</p>
+    `,
+  });
+
+  res
+    .status(STATUS_CODES.OK)
+    .json(new ApiResponse(STATUS_CODES.OK, "OTP sent to your email"));
+})
