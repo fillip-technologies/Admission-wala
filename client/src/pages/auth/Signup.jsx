@@ -24,8 +24,8 @@ export default function Signup() {
   const onSubmit = async () => {
     const result = await dispatch(registerUser(form));
     if (registerUser.fulfilled.match(result)) {
-      // Signup issues no cookie -> send to login with email prefilled.
-      navigate(PATHS.LOGIN, { state: { email: form.email, justRegistered: true } });
+      // Registration sends a 6-digit OTP -> go verify the email.
+      navigate(PATHS.VERIFY_EMAIL, { state: { email: form.email } });
     }
   };
 

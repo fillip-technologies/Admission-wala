@@ -35,7 +35,7 @@ export default function AdminDashboard() {
     {
       label: "Enquiries",
       value: enquiriesLoading ? null : enquiries.length,
-      link: PATHS.ADMIN.ENQUIRIES,
+      link: PATHS.ADMIN.ENQUIRY,
       color: "bg-saffron/15 text-saffron-600",
     },
     {

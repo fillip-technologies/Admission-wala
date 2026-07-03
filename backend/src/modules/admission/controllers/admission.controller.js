@@ -9,7 +9,7 @@ import { Admission, ADMISSION_STATUSES } from "../models/admission.model.js";
 const BOARDS = ["NIOS", "BBOSE", "BOSSE"];
 const CLASS_TYPES = ["10th", "12th"];
 
-// Student: submit a new admission application with document uploads.
+
 export const createAdmission = asyncHandler(async (req, res) => {
   const { board, classType, course } = req.body;
 
@@ -18,7 +18,7 @@ export const createAdmission = asyncHandler(async (req, res) => {
   if (!CLASS_TYPES.includes(classType))
     throw new ApiError(STATUS_CODES.BAD_REQUEST, "Please select a valid class");
 
-  // One active application at a time; a rejected one can be re-submitted.
+
   const existing = await Admission.findOne({
     user: req.user,
     status: { $ne: "rejected" },

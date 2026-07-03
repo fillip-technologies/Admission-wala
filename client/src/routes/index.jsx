@@ -17,19 +17,26 @@ const Home    = lazy(() => import("../pages/public/Home"));
 const NotFound = lazy(() => import("../pages/public/NotFound"));
 
 // Auth
-const Login  = lazy(() => import("../pages/auth/Login"));
-const Signup = lazy(() => import("../pages/auth/Signup"));
+const Login          = lazy(() => import("../pages/auth/Login"));
+const Signup         = lazy(() => import("../pages/auth/Signup"));
+const VerifyEmail    = lazy(() => import("../pages/auth/VerifyEmail"));
+const ForgotPassword = lazy(() => import("../pages/auth/ForgotPassword"));
 
 // Student
 const StudentDashboard = lazy(() => import("../pages/student/StudentDashboard"));
 const Admission        = lazy(() => import("../pages/student/Admission"));
+const Counselling      = lazy(() => import("../pages/student/Counselling"));
 const Profile          = lazy(() => import("../pages/student/Profile"));
+
+// Counseller
+const CounsellerDashboard = lazy(() => import("../pages/counseller/CounsellerDashboard"));
 
 // Admin
 const AdminDashboard = lazy(() => import("../pages/admin/AdminDashboard"));
 const Students       = lazy(() => import("../pages/admin/Students"));
 const Enquiry        = lazy(() => import("../pages/admin/Enquiry"));
 const Counsellers    = lazy(() => import("../pages/admin/Counsellers"));
+const Reports        = lazy(() => import("../pages/admin/Reports"));
 
 export const router = createBrowserRouter([
   {
@@ -50,8 +57,10 @@ export const router = createBrowserRouter([
           {
             element: <AuthLayout />,
             children: [
-              { path: "login",  element: <Login />  },
-              { path: "signup", element: <Signup /> },
+              { path: "login",           element: <Login />          },
+              { path: "signup",          element: <Signup />         },
+              { path: "verify-email",    element: <VerifyEmail />    },
+              { path: "forgot-password", element: <ForgotPassword /> },
             ],
           },
         ],
@@ -65,9 +74,24 @@ export const router = createBrowserRouter([
           {
             element: <DashboardLayout />,
             children: [
-              { index: true,       element: <StudentDashboard /> },
-              { path: "admission", element: <Admission />        },
-              { path: "profile",   element: <Profile />          },
+              { index: true,        element: <StudentDashboard /> },
+              { path: "admission",  element: <Admission />        },
+              { path: "counselling", element: <Counselling />     },
+              { path: "profile",    element: <Profile />          },
+            ],
+          },
+        ],
+      },
+
+      // ── counseller ──────────────────────────────────────────────────────
+      {
+        path: "counseller",
+        element: <RoleRoute allow={[ROLES.COUNSELLER]} />,
+        children: [
+          {
+            element: <DashboardLayout />,
+            children: [
+              { index: true, element: <CounsellerDashboard /> },
             ],
           },
         ],
@@ -85,6 +109,7 @@ export const router = createBrowserRouter([
               { path: "students",    element: <Students />       },
               { path: "enquiry",     element: <Enquiry />        },
               { path: "counsellers", element: <Counsellers />    },
+              { path: "reports",     element: <Reports />        },
             ],
           },
         ],

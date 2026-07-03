@@ -14,9 +14,10 @@ export default function Login() {
   const location = useLocation();
   const { loading, error } = useAppSelector(selectAuth);
 
-  // signup redirects here with { email, justRegistered }
+  // other auth pages redirect here with { email, justVerified?, passwordReset? }
   const prefillEmail = location.state?.email || "";
-  const justRegistered = location.state?.justRegistered || false;
+  const justVerified = location.state?.justVerified || false;
+  const passwordReset = location.state?.passwordReset || false;
 
   const [form, setForm] = useState({ email: prefillEmail, password: "" });
 
@@ -40,9 +41,14 @@ export default function Login() {
       <h1 className="font-display text-2xl font-bold text-ink">Welcome back</h1>
       <p className="mt-1 text-sm text-muted">Log in to track your admission and counselling.</p>
 
-      {justRegistered && (
+      {justVerified && (
         <p className="mt-4 rounded-lg bg-teal-deep/10 px-3 py-2 text-sm font-medium text-teal-deep">
-          Account created. Please log in to continue.
+          Email verified. Please log in to continue.
+        </p>
+      )}
+      {passwordReset && (
+        <p className="mt-4 rounded-lg bg-teal-deep/10 px-3 py-2 text-sm font-medium text-teal-deep">
+          Password reset. Please log in with your new password.
         </p>
       )}
 
@@ -51,8 +57,28 @@ export default function Login() {
         <Field label="Password" name="password" type="password" value={form.password} onChange={onChange} placeholder="Your password" />
       </div>
 
+      <p className="mt-2 text-right text-sm">
+        <Link to={PATHS.FORGOT_PASSWORD} className="font-semibold text-saffron-600 hover:underline">
+          Forgot password?
+        </Link>
+      </p>
+
       {error && (
-        <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600">{error}</p>
+        <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600">
+          {error}
+          {/^please verify your email/i.test(error) && (
+            <>
+              {" "}
+              <Link
+                to={PATHS.VERIFY_EMAIL}
+                state={{ email: form.email }}
+                className="font-semibold underline"
+              >
+                Verify now
+              </Link>
+            </>
+          )}
+        </p>
       )}
 
       <Button onClick={onSubmit} disabled={loading} className="mt-5 w-full">
