@@ -5,6 +5,8 @@ import morgan from 'morgan'
 import cookieParser from "cookie-parser";
 import { enquiryRouter } from "./modules/enquiry/routes/enquiry.route.js";
 import { adminRouter } from "./modules/admin/routes/admin.routes.js";
+import { admissionRouter } from "./modules/admission/routes/admission.route.js";
+import { errorHandler } from "./common/middlewares/errorHandler.js";
 
 const app = express();
 
@@ -27,7 +29,8 @@ app.get("/", (req, res) => {
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/enquiry', enquiryRouter);
 app.use('/api/v1/admin', adminRouter);
+app.use('/api/v1/admission', admissionRouter);
 
-
+app.use(errorHandler);
 
 export default app;
