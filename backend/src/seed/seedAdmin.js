@@ -1,6 +1,6 @@
 import dotenv from "dotenv"
 dotenv.config();
-import mongoose from "mongoose";
+import { connectDb } from "../configs/db.js";
 import { User } from "../modules/auth/models/auth.model.js";
 
 const seedAdmin = async (name, email, mobile_number, password) => {
@@ -23,7 +23,7 @@ const seedAdmin = async (name, email, mobile_number, password) => {
 };
 
 const run = async () => {
-  await mongoose.connect(process.env.MONGO_URI);
+  await connectDb();
 
   await seedAdmin(
     "Admin",
