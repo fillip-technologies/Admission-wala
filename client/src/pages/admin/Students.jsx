@@ -19,8 +19,7 @@ export default function Students() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    // Only fetch if not already loaded (avoids redundant network call when
-    // coming back from another admin tab that already fetched the list).
+    
     if (students.length === 0) dispatch(getAllStudents());
   }, [dispatch, students.length]);
 

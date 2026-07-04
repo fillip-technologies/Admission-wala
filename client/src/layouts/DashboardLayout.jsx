@@ -5,8 +5,7 @@ import { logoutUser, selectAuth } from "../features/auth/auth.slice";
 import Sidebar from "../components/Sidebar";
 import PageLoader from "../components/ui/PageLoader";
 
-// Shared shell for every logged-in area. Which links appear is driven purely
-// by the user's role via navConfig, so one layout serves student + admin.
+
 export default function DashboardLayout() {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(selectAuth);
@@ -21,7 +20,7 @@ export default function DashboardLayout() {
         <Sidebar role={role} />
       </aside>
 
-      {/* mobile drawer */}
+      
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div

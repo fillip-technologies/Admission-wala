@@ -240,9 +240,7 @@ export default function Enquiry() {
   );
 }
 
-// ─── Badge components ────────────────────────────────────────────────────────
 
-// Matches your enquiryType enum: "NIOS" | "BBOSE" | "BOSSE"
 function BoardBadge({ type }) {
   const styles = {
     NIOS:  "bg-indigo-deep/10 text-indigo-deep",

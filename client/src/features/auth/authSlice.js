@@ -1,12 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { authApi } from "../../api/authApi";
 
-/**
- * Your controllers use the ApiResponse utility, so a typical body looks like:
- *   { statusCode, success, message, data: { user } }   OR   { ..., data: user }
- * This helper handles both shapes. If your /me or /login returns the user under
- * a different key, tweak ONLY this function.
- */
+
 const extractUser = (res) => {
   const payload = res?.data?.data ?? res?.data;
   return payload?.user ?? payload ?? null;

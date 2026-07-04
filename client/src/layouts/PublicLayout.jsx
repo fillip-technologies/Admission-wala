@@ -6,7 +6,7 @@ import WhatsAppButton from "../components/WhatsAppButton";
 import PageLoader from "../components/ui/PageLoader";
 import { AuthModalProvider } from "../components/auth/AuthModalProvider";
 
-// Marketing / public site shell.
+
 export default function PublicLayout() {
   return (
     <AuthModalProvider>

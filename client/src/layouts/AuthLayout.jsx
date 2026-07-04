@@ -3,7 +3,7 @@ import { Link, Outlet } from "react-router-dom";
 import PageLoader from "../components/ui/PageLoader";
 import { PATHS } from "../routes/paths";
 
-// Centered card shell for /login and /signup.
+
 export default function AuthLayout() {
   return (
     <div className="grid min-h-screen place-items-center bg-canvas px-4 py-10">

@@ -3,8 +3,7 @@ import AuthModal from "./AuthModal";
 
 const AuthModalContext = createContext(null);
 
-// Global provider so any button (Navbar, hero, counselling popup…) can open the
-// login/register modal without prop-drilling.
+
 export function AuthModalProvider({ children }) {
   const [view, setView] = useState(null); // null = closed | "login" | "register" | ...
 
