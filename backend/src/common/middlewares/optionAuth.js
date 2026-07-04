@@ -2,7 +2,10 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
 
 export const optionalAuth = asyncHandler(async (req, res, next) => {
-  const token = req.cookies?.accessToken;
+  const bearer = req.headers.authorization;
+  const token =
+    (bearer?.startsWith("Bearer ") ? bearer.slice(7).trim() : null) ||
+    req.cookies?.accessToken;
 
   // User is not logged in
   if (!token) {

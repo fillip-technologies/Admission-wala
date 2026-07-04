@@ -13,6 +13,15 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+// Cross-site cookies get blocked by browsers, so we also carry the auth token
+// in the Authorization header. Stored on login (see auth.slice.js).
+export const TOKEN_KEY = "accessToken";
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem(TOKEN_KEY);
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
 /**
  * Central place to react to auth failures as the app grows.
  * NOTE: /me returning 401 for a guest is normal, so we don't hard-redirect here.

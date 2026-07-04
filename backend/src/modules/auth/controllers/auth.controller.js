@@ -149,7 +149,9 @@ export const loginUser = asyncHandler(async (req, res) => {
     .status(STATUS_CODES.OK)
     .cookie("accessToken", accessToken, cookieOptions)
     .cookie("refreshToken", refreshToken, cookieOptions)
-    .json(new ApiResponse(STATUS_CODES.CREATED, `Welcome ${user.name}`, user));
+    // Also return the token in the body so a cross-site SPA (where cookies get
+    // blocked) can send it as an Authorization: Bearer header.
+    .json(new ApiResponse(STATUS_CODES.CREATED, `Welcome ${user.name}`, { user, accessToken }));
 });
 
 export const getMe = asyncHandler(async (req, res) => {

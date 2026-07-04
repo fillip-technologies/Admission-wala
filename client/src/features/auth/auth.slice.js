@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { authApi } from "./auth.api";
+import { TOKEN_KEY } from "../../api/axiosInstance";
 
 
 const extractUser = (res) => {
@@ -24,7 +25,12 @@ export const loginUser = createAsyncThunk(
   "auth/login",
   async (form, { rejectWithValue }) => {
     try {
-      return extractUser(await authApi.login(form));
+      const res = await authApi.login(form);
+      // Persist the token so the axios interceptor can send it as a Bearer
+      // header (survives cross-site cookie blocking).
+      const token = res?.data?.data?.accessToken;
+      if (token) localStorage.setItem(TOKEN_KEY, token);
+      return extractUser(res);
     } catch (err) {
       return rejectWithValue(getError(err));
     }
@@ -50,6 +56,8 @@ export const logoutUser = createAsyncThunk(
       return null;
     } catch (err) {
       return rejectWithValue(getError(err));
+    } finally {
+      localStorage.removeItem(TOKEN_KEY);
     }
   },
 );
