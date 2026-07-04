@@ -1,25 +1,34 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { selectAuth } from "../../features/auth/auth.slice";
 import { roleHome } from "../../config/roles";
 import { PATHS } from "../../routes/paths";
 import CourseCard from "../../components/CourseCard";
+import CounsellingPopup from "../../components/CounsellingPopup";
+import { useAuthModal } from "../../components/auth/AuthModalProvider";
 import { boards, courses, trustStats } from "../../data/courses";
 import heroStudent from "../../assets/hero-student.png";
 
 export default function Home() {
   const navigate = useNavigate();
+  const { openAuth } = useAuthModal();
   const { isAuthenticated, user } = useAppSelector(selectAuth);
+  const [counsellingSignal, setCounsellingSignal] = useState(0);
+  const openCounselling = () => setCounsellingSignal((n) => n + 1);
 
-  // Not logged in -> signup. Logged in -> straight to admission flow.
+  // Not logged in -> open register popup. Logged in -> straight to admission flow.
   const startAdmission = (course) => {
-    if (!isAuthenticated) return navigate(PATHS.SIGNUP);
+    if (!isAuthenticated) return openAuth("register");
     const q = course?.id ? `?course=${course.id}` : "";
     navigate(`${PATHS.STUDENT.ADMISSION}${q}`);
   };
 
   return (
     <>
+      {/* First-visit + on-demand counselling registration popup */}
+      <CounsellingPopup openSignal={counsellingSignal} />
+
       {/* ---------- HERO ---------- */}
       <section className="relative overflow-hidden">
         <div aria-hidden className="pointer-events-none absolute -top-24 right-0 h-96 w-96 rounded-full bg-saffron/15 blur-3xl" />
@@ -49,14 +58,14 @@ export default function Home() {
 
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <button
-                  onClick={() => (isAuthenticated ? navigate(roleHome(user?.role)) : navigate(PATHS.SIGNUP))}
+                  onClick={() => (isAuthenticated ? navigate(roleHome(user?.role)) : openAuth("register"))}
                   className="rounded-xl bg-ink px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-ink-soft"
                 >
                   {isAuthenticated ? "Go to dashboard" : "Start free — Register"}
                 </button>
-                <a href="#counselling" className="rounded-xl border border-line bg-white px-6 py-3.5 text-sm font-semibold text-ink transition hover:border-ink/30">
+                <button onClick={openCounselling} className="rounded-xl border border-line bg-white px-6 py-3.5 text-sm font-semibold text-ink transition hover:border-ink/30">
                   Book free counselling
-                </a>
+                </button>
               </div>
 
               <dl className="mt-12 flex max-w-md gap-8">
@@ -106,6 +115,29 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ---------- LMS FEATURES ---------- */}
+      <section id="lms" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+        <SectionHead eyebrow="Learning platform" title="What you get inside our LMS"
+          sub="Everything you need to study, revise and stay on track — all in one place, included with your admission." />
+        <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {lmsFeatures.map((f) => (
+            <div key={f.title} className="group rounded-2xl border border-line bg-white p-6 transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-ink/5">
+              <div className="grid h-11 w-11 place-items-center rounded-xl bg-ink/5 text-ink transition group-hover:bg-saffron group-hover:text-white">
+                {f.icon}
+              </div>
+              <h3 className="mt-4 font-display text-lg font-bold text-ink">{f.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted">{f.desc}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-9 flex justify-center">
+          <button onClick={() => startAdmission(null)}
+            className="rounded-xl bg-ink px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-ink-soft">
+            Start your learning journey today
+          </button>
+        </div>
+      </section>
+
       {/* ---------- COUNSELLING ---------- */}
       <section id="counselling" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
         <div className="overflow-hidden rounded-3xl bg-ink px-6 py-12 sm:px-12">
@@ -138,3 +170,46 @@ function SectionHead({ eyebrow, title, sub }) {
     </div>
   );
 }
+
+const iconProps = {
+  width: 24, height: 24, viewBox: "0 0 24 24", fill: "none",
+  stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round",
+};
+
+const lmsFeatures = [
+  {
+    title: "Study Notes",
+    desc: "Chapter-wise notes, important questions, quick revision guides.",
+    icon: (
+      <svg {...iconProps}><path d="M4 19.5A2.5 2.5 0 016.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" /></svg>
+    ),
+  },
+  {
+    title: "Digital Library",
+    desc: "Access to e-books, previous year papers, sample papers.",
+    icon: (
+      <svg {...iconProps}><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z" /><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" /></svg>
+    ),
+  },
+  {
+    title: "Progress Tracking",
+    desc: "Track your learning progress, test scores, performance analytics.",
+    icon: (
+      <svg {...iconProps}><path d="M3 3v18h18" /><path d="M7 15l4-4 3 3 5-6" /></svg>
+    ),
+  },
+  {
+    title: "Doubt Clearing",
+    desc: "24/7 doubt support, discussion forums, expert sessions.",
+    icon: (
+      <svg {...iconProps}><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" /><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3" /><path d="M12 17h.01" /></svg>
+    ),
+  },
+  {
+    title: "Mock Tests",
+    desc: "Chapter-wise tests, full-length mock exams, performance analysis.",
+    icon: (
+      <svg {...iconProps}><path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" /></svg>
+    ),
+  },
+];

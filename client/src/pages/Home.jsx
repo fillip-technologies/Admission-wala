@@ -69,7 +69,7 @@ export default function Home() {
 
               <p className="mt-5 text-lg leading-relaxed text-muted">
                 Shri Admission Gurukul helps you complete Class 10th and 12th through
-                recognised open boards — with a counsellor guiding every step,
+                recognised open boards with a counsellor guiding every step,
                 from course choice to your certificate.
               </p>
 
@@ -120,7 +120,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- BOARDS ---------- */}
+    
       <section id="boards" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
         <SectionHead
           eyebrow="Choose your board"

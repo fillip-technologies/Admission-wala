@@ -3,10 +3,12 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { logoutUser, selectAuth } from "../features/auth/auth.slice";
 import { roleHome } from "../config/roles";
 import { PATHS } from "../routes/paths";
+import { useAuthModal } from "./auth/AuthModalProvider";
 
 export default function Navbar() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { openAuth } = useAuthModal();
   const { isAuthenticated, user } = useAppSelector(selectAuth);
 
   const onLogout = async () => {
@@ -50,18 +52,18 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Link
-                to={PATHS.LOGIN}
+              <button
+                onClick={() => openAuth("login")}
                 className="rounded-lg px-3.5 py-2 text-sm font-semibold text-ink transition hover:bg-white"
               >
                 Log in
-              </Link>
-              <Link
-                to={PATHS.SIGNUP}
+              </button>
+              <button
+                onClick={() => openAuth("register")}
                 className="rounded-lg bg-ink px-3.5 py-2 text-sm font-semibold text-white transition hover:bg-ink-soft"
               >
                 Register
-              </Link>
+              </button>
             </>
           )}
         </div>

@@ -6,23 +6,25 @@ import { User } from "../../auth/models/auth.model.js";
 import { Enquiry } from "../model/enquiry.model.js";
 
 export const sendEnquiry = asyncHandler(async (req, res) => {
-  const { email, mobile_number, enquiryType, classType, description } =
+  const { email, mobile_number, enquiryType, classType, description, customBoard } =
     req.body;
 
-  if (
-    [email, mobile_number, enquiryType, classType, description].some(
-      (field) => field?.trim() === "",
-    )
-  ) {
-    throw new ApiError(STATUS_CODES.BAD_REQUEST, "Invalid data field");
+  if (!email?.trim() || !mobile_number?.trim()) {
+    throw new ApiError(
+      STATUS_CODES.BAD_REQUEST,
+      "Email and mobile number are required",
+    );
   }
- 
-  const user = await User.findById(req.user);
+
+  // Guests (not logged in) have req.user === null — only look up when present.
+  const user = req.user ? await User.findById(req.user) : null;
+
   const enq = await Enquiry.create({
-    user:user.id,
+    user: user?.id,
     email: email,
     mobile_number: mobile_number,
     enquiryType: enquiryType,
+    customBoard: customBoard,
     classType: classType,
     description: description,
     role: user?.role || 'guest'
