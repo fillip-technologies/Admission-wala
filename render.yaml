@@ -1,0 +1,72 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Deploys the Dockerized backend + the static React frontend.
+# MongoDB is NOT hosted on Render — use MongoDB Atlas and paste the connection
+# string into the backend's MONGO_URI env var (marked sync:false below).
+
+services:
+  # ---------- Backend API (Dockerized Express) ----------
+  - type: web
+    name: aw-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    region: singapore
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production # enables secure + SameSite=None cookies for cross-site auth
+      # Render injects PORT automatically; server.js reads process.env.PORT.
+      - key: MONGO_URI
+        sync: false # e.g. mongodb+srv://user:pass@cluster.mongodb.net/Addmission_wala
+      - key: CLIENT_URL
+        sync: false # set to the frontend URL, e.g. https://aw-frontend.onrender.com
+      - key: ACCESS_TOKEN_SECRET
+        generateValue: true
+      - key: REFRESH_TOKEN_SECRET
+        generateValue: true
+      - key: ACCESS_TOKEN_EXPIRES_IN
+        value: 7d
+      - key: REFRESH_TOKEN_EXPIRES_IN
+        value: 30d
+      - key: MAX_DEVICES
+        value: "5"
+      - key: SALT
+        value: "12"
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+  # ---------- Frontend (static React SPA) ----------
+  - type: web
+    name: aw-frontend
+    runtime: static
+    rootDir: client
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    autoDeploy: true
+    envVars:
+      # Baked into the SPA at build time. Set to the backend URL + /api/v1,
+      # e.g. https://aw-backend.onrender.com/api/v1
+      - key: VITE_API_URL
+        sync: false
+      # Floating WhatsApp button number (international format, digits only).
+      - key: VITE_WHATSAPP_NUMBER
+        value: "918409835444"
+    routes:
+      # SPA fallback so React Router deep links work.
+      - type: rewrite
+        source: /*
+        destination: /index.html
