@@ -13,7 +13,9 @@ export const errorHandler = (err, req, res, next) => {
     if (err.code === "LIMIT_FILE_SIZE") message = "File too large (max 5MB)";
   }
 
-  if (process.env.NODE_ENV !== "production" && status >= 500) {
+  // Always log server-side (5xx) errors so they're visible in production logs
+  // (Render, etc.). Client (4xx) errors stay quiet unless debugging.
+  if (status >= 500) {
     console.error(err);
   }
 
