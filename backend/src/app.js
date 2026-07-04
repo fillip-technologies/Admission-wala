@@ -12,8 +12,20 @@ import { errorHandler } from "./common/middlewares/errorHandler.js";
 const app = express();
 
 
+// CLIENT_URL may be a comma-separated list, e.g.
+//   "http://localhost:5173,https://your-frontend.onrender.com"
+const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:5173",  // your Vite dev URL
+  origin: (origin, cb) => {
+    // allow same-origin / non-browser requests (no Origin header) and any
+    // whitelisted origin; block everything else.
+    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    return cb(new Error(`Not allowed by CORS: ${origin}`));
+  },
   credentials: true,
 }));
 app.use(express.json());
