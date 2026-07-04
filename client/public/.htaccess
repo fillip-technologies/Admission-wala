@@ -1,0 +1,19 @@
+# SPA fallback for Apache / cPanel static hosting.
+# Without this, refreshing or deep-linking a React Router route (e.g. /student)
+# returns 404 because the file doesn't physically exist. This rewrites any
+# non-file request back to index.html so the client router handles it.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  # If the requested path isn't a real file or directory, serve index.html.
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# Cache hashed assets aggressively; they change name on every build.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css|woff2?|png|jpg|jpeg|svg|webp)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>

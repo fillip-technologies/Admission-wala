@@ -12,12 +12,20 @@ import { errorHandler } from "./common/middlewares/errorHandler.js";
 const app = express();
 
 
-// CLIENT_URL may be a comma-separated list, e.g.
-//   "http://localhost:5173,https://your-frontend.onrender.com"
-const allowedOrigins = (process.env.CLIENT_URL ||"https://shreeadmissiongurukul.fillipsoftware.com" || "http://localhost:5173")
-  .split(",")
-  .map((o) => o.trim())
-  .filter(Boolean);
+// Always-allowed origins (prod frontend + local dev), plus any extra ones from
+// CLIENT_URL (comma-separated). Merging avoids a CLIENT_URL value accidentally
+// dropping the production or localhost origin.
+const DEFAULT_ORIGINS = [
+  "https://shreeadmissiongurukul.fillipsoftware.com",
+  "http://localhost:5173",
+];
+const allowedOrigins = [
+  ...DEFAULT_ORIGINS,
+  ...(process.env.CLIENT_URL || "")
+    .split(",")
+    .map((o) => o.trim())
+    .filter(Boolean),
+];
 
 app.use(cors({
   origin: (origin, cb) => {
