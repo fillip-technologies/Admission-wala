@@ -7,7 +7,7 @@ import { PATHS } from "../../routes/paths";
 import CourseCard from "../../components/CourseCard";
 import CounsellingPopup from "../../components/CounsellingPopup";
 import { useAuthModal } from "../../components/auth/AuthModalProvider";
-import { boards, courses, trustStats } from "../../data/courses";
+import { boards, courses, trustStats, admissionPrograms } from "../../data/courses";
 import heroStudent from "../../assets/hero-student.png";
 
 export default function Home() {
@@ -100,6 +100,23 @@ export default function Home() {
               <p className="mt-1 text-sm font-semibold text-ink/70">{b.name}</p>
               <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">{b.blurb}</p>
             </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ---------- ADMISSION PROGRAMS ---------- */}
+      <section id="programs" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+        <SectionHead eyebrow="Admissions we handle" title="One place for every admission"
+          sub="From school and open boards to UG, PG and study abroad — our counsellors guide you into the right programme." />
+        <div className="mt-8 flex flex-wrap gap-2.5">
+          {admissionPrograms.map((p) => (
+            <button
+              key={p}
+              onClick={() => startAdmission(null)}
+              className="rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-ink transition hover:border-saffron hover:bg-saffron/10"
+            >
+              {p}
+            </button>
           ))}
         </div>
       </section>

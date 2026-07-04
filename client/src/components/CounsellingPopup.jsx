@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAppSelector } from "../app/hooks";
 import { selectAuth } from "../features/auth/auth.slice";
 import { enquiryApi } from "../features/enquiry/enquiry.api";
+import { admissionPrograms } from "../data/courses";
 import { useAuthModal } from "./auth/AuthModalProvider";
 
 const STORAGE_KEY = "sag_counselling_popup_seen";
@@ -10,6 +11,7 @@ const empty = {
   name: "",
   email: "",
   mobile_number: "",
+  program: admissionPrograms[0],
   enquiryType: "NIOS",
   classType: "10th",
   description: "",
@@ -187,6 +189,12 @@ export default function CounsellingPopup({ openSignal = 0 }) {
               placeholder="9876543210"
               inputMode="numeric"
             />
+
+            <Select label="Admission program" name="program" value={form.program} onChange={handleChange}>
+              {admissionPrograms.map((p) => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </Select>
 
             <div className="grid grid-cols-2 gap-3">
               <Select label="Board" name="enquiryType" value={form.enquiryType} onChange={handleChange}>

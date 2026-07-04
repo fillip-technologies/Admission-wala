@@ -5,13 +5,14 @@ import { asyncHandler } from "../../../utils/asyncHandler.js";
 import { User } from "../../auth/models/auth.model.js";
 import { uploadToCloudinary } from "../../../utils/cloudinaryUpload.js";
 import { Admission, ADMISSION_STATUSES } from "../models/admission.model.js";
+import { ADMISSION_PROGRAMS } from "../../../common/constants/admissionPrograms.js";
 
 const BOARDS = ["NIOS", "BBOSE", "BOSSE", "Other"];
 const CLASS_TYPES = ["10th", "12th"];
 
 
 export const createAdmission = asyncHandler(async (req, res) => {
-  const { board, classType, course, customBoard } = req.body;
+  const { board, classType, course, customBoard, program } = req.body;
 
   if (!BOARDS.includes(board))
     throw new ApiError(STATUS_CODES.BAD_REQUEST, "Please select a valid board");
@@ -19,6 +20,8 @@ export const createAdmission = asyncHandler(async (req, res) => {
     throw new ApiError(STATUS_CODES.BAD_REQUEST, "Please select a valid class");
   if (board === "Other" && (typeof customBoard !== "string" || customBoard.trim() === ""))
     throw new ApiError(STATUS_CODES.BAD_REQUEST, "Please enter your board name");
+  if (program && !ADMISSION_PROGRAMS.includes(program))
+    throw new ApiError(STATUS_CODES.BAD_REQUEST, "Please select a valid admission program");
 
 
   const existing = await Admission.findOne({
@@ -46,6 +49,7 @@ export const createAdmission = asyncHandler(async (req, res) => {
     user: req.user,
     board,
     customBoard: board === "Other" ? customBoard.trim() : undefined,
+    program,
     classType,
     course,
     documents,

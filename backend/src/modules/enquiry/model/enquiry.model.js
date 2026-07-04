@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { User } from "../../auth/models/auth.model.js";
+import { ADMISSION_PROGRAMS } from "../../../common/constants/admissionPrograms.js";
 
 const enquirySchema = new mongoose.Schema(
   {
@@ -31,6 +32,11 @@ const enquirySchema = new mongoose.Schema(
     customBoard: {
       type: String,
       trim: true,
+    },
+    // Admission vertical the enquiry is about (School, UG, PG, MBA, …).
+    program: {
+      type: String,
+      enum: ADMISSION_PROGRAMS,
     },
     classType: {
       type: String,

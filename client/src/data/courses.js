@@ -22,6 +22,28 @@ export const courses = [
     description: "Job-ready certifications you can stack with your board admission. Counsellor helps you pick the right track." },
 ];
 
+// Full range of admissions the consultancy handles (beyond the open-school
+// boards above). Shown as a chip list on the home page.
+export const admissionPrograms = [
+  "School Admission",
+  "NIOS Admission",
+  "Diploma Admission",
+  "UG Admission",
+  "PG Admission",
+  "Engineering Admission",
+  "Medical Admission",
+  "MBA Admission",
+  "Law Admission",
+  "Nursing Admission",
+  "Pharmacy Admission",
+  "Agriculture Admission",
+  "Hotel Management Admission",
+  "Aviation Admission",
+  "Design Admission",
+  "Study Abroad Admission",
+  "PhD Admission",
+];
+
 export const trustStats = [
   { value: "3", label: "Recognised boards" },
   { value: "6+", label: "Courses to choose from" },

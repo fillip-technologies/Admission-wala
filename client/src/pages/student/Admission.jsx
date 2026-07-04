@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { admissionApi } from "../../features/admission/admission.api";
-import { boards, courses } from "../../data/courses";
+import { boards, courses, admissionPrograms } from "../../data/courses";
 import { ADMISSION_STEPS, STATUS_LABEL, stepIndex } from "../../features/admission/statuses";
 import Field from "../../components/ui/Field";
 import Button from "../../components/ui/Button";
@@ -97,6 +97,7 @@ export default function Admission() {
   const [error, setError] = useState(null);
 
   const [form, setForm] = useState({
+    program: "",
     board: "",
     customBoard: "",
     classType: "",
@@ -145,6 +146,7 @@ export default function Admission() {
     setSubmitting(true);
     try {
       const fd = new FormData();
+      if (form.program) fd.append("program", form.program);
       fd.append("board", form.board);
       if (form.board === "Other") fd.append("customBoard", form.customBoard.trim());
       fd.append("classType", form.classType);
@@ -183,6 +185,23 @@ export default function Admission() {
         ) : (
           <div className="rounded-2xl border border-line bg-white p-6">
             <div className="space-y-4">
+              <label className="block">
+                <span className="mb-1 block text-xs font-semibold text-ink">Admission program</span>
+                <select
+                  name="program"
+                  value={form.program}
+                  onChange={onChange}
+                  className="w-full rounded-xl border border-line bg-canvas px-3.5 py-2.5 text-sm text-ink outline-none focus:border-ink focus:bg-white focus:ring-2 focus:ring-ink/10"
+                >
+                  <option value="">Select a program</option>
+                  {admissionPrograms.map((p) => (
+                    <option key={p} value={p}>
+                      {p}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
               <label className="block">
                 <span className="mb-1 block text-xs font-semibold text-ink">Board</span>
                 <select

@@ -14,7 +14,7 @@ const app = express();
 
 // CLIENT_URL may be a comma-separated list, e.g.
 //   "http://localhost:5173,https://your-frontend.onrender.com"
-const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
+const allowedOrigins = (process.env.CLIENT_URL ||"https://shreeadmissiongurukul.fillipsoftware.com" || "http://localhost:5173")
   .split(",")
   .map((o) => o.trim())
   .filter(Boolean);

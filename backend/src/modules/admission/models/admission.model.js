@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { ADMISSION_PROGRAMS } from "../../../common/constants/admissionPrograms.js";
 
 export const ADMISSION_STATUSES = [
   "submitted",
@@ -42,6 +43,11 @@ const admissionSchema = new mongoose.Schema(
     customBoard: {
       type: String,
       trim: true,
+    },
+    // Admission vertical the applicant is applying for (School, UG, PG, …).
+    program: {
+      type: String,
+      enum: ADMISSION_PROGRAMS,
     },
     classType: {
       type: String,

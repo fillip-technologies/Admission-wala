@@ -6,7 +6,7 @@ import { User } from "../../auth/models/auth.model.js";
 import { Enquiry } from "../model/enquiry.model.js";
 
 export const sendEnquiry = asyncHandler(async (req, res) => {
-  const { email, mobile_number, enquiryType, classType, description, customBoard } =
+  const { email, mobile_number, enquiryType, classType, description, customBoard, program } =
     req.body;
 
   if (!email?.trim() || !mobile_number?.trim()) {
@@ -25,6 +25,7 @@ export const sendEnquiry = asyncHandler(async (req, res) => {
     mobile_number: mobile_number,
     enquiryType: enquiryType,
     customBoard: customBoard,
+    program: program,
     classType: classType,
     description: description,
     role: user?.role || 'guest'
