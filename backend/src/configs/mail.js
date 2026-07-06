@@ -22,7 +22,11 @@ export const transporter = nodemailer.createTransport({
   socketTimeout: 15000,
 });
 
-if (smtpUser && smtpPass) {
+// When Resend is configured we send over HTTPS and never touch SMTP, so skip the
+// verify() (which would just time out on hosts that block outbound SMTP ports).
+if (process.env.RESEND_API_KEY) {
+  console.log("Email: using Resend HTTP API.");
+} else if (smtpUser && smtpPass) {
   transporter.verify((error) => {
     if (error) {
       console.error("Mail server connection failed:", error.message);
