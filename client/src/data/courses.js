@@ -36,6 +36,17 @@ export const admissionPrograms = [
   "BOSSE Admission",
 ];
 
+// What our counsellors help students with, end to end.
+export const expertise = [
+  "Personalized Career Counselling",
+  "Course & College Selection",
+  "Admission Guidance",
+  "Application & Documentation Support",
+  "Scholarship & Financial Aid Assistance",
+  "Study in India & Abroad",
+  "Visa Guidance (for international admissions)",
+];
+
 // Everything else: we don't process the admission ourselves, we only guide the
 // student. Clicking these opens the counselling popup instead.
 export const counsellingPrograms = [

@@ -28,6 +28,17 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Continuous horizontal marquee (testimonials). Content is duplicated in the
+   markup, so translating by 50% loops seamlessly. -50% -> 0 scrolls left→right. */
+@keyframes marquee-ltr {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+.animate-marquee {
+  animation: marquee-ltr 40s linear infinite;
+  will-change: transform;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.001ms !important;

@@ -41,6 +41,7 @@ const Students       = lazy(() => import("../pages/admin/Students"));
 const Enquiry        = lazy(() => import("../pages/admin/Enquiry"));
 const Counsellers    = lazy(() => import("../pages/admin/Counsellers"));
 const Announcements  = lazy(() => import("../pages/admin/Announcements"));
+const Promos         = lazy(() => import("../pages/admin/Promos"));
 const Reports        = lazy(() => import("../pages/admin/Reports"));
 
 export const router = createBrowserRouter([
@@ -121,6 +122,7 @@ export const router = createBrowserRouter([
               { path: "enquiry",     element: <Enquiry />        },
               { path: "counsellers", element: <Counsellers />    },
               { path: "announcements", element: <Announcements /> },
+              { path: "promos",      element: <Promos />         },
               { path: "reports",     element: <Reports />        },
             ],
           },

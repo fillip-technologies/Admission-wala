@@ -21,6 +21,7 @@ export const PATHS = {
     ENQUIRY: "/admin/enquiry",
     COUNSELLERS: "/admin/counsellers",
     ANNOUNCEMENTS: "/admin/announcements",
+    PROMOS: "/admin/promos",
     REPORTS: "/admin/reports",
   },
 

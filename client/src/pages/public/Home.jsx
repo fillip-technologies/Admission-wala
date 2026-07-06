@@ -8,12 +8,21 @@ import CourseCard from "../../components/CourseCard";
 import CounsellingPopup from "../../components/CounsellingPopup";
 import AnnouncementsSection from "../../components/AnnouncementsSection";
 import { useAuthModal } from "../../components/auth/AuthModalProvider";
-import { boards, courses, trustStats, admissionPrograms, counsellingPrograms } from "../../data/courses";
+import { boards, courses, trustStats, admissionPrograms, counsellingPrograms, expertise } from "../../data/courses";
 import { testimonials } from "../../data/testimonials";
 import { faqs } from "../../data/faqs";
-import TestimonialCard from "../../components/TestimonialCard";
+import { heroBadges, learningSteps } from "../../data/home";
+import TestimonialsMarquee from "../../components/TestimonialsMarquee";
 import FaqAccordion from "../../components/FaqAccordion";
+import PromoCarousel from "../../components/PromoCarousel";
 import heroStudent from "../../assets/hero-student.png";
+
+// Hover colour cycled across the learning-journey cards. Literal strings for JIT.
+const journeyHovers = [
+  "hover:border-saffron hover:bg-saffron/5 hover:shadow-saffron/10",
+  "hover:border-teal-deep hover:bg-teal-deep/5 hover:shadow-teal-deep/10",
+  "hover:border-indigo-deep hover:bg-indigo-deep/5 hover:shadow-indigo-deep/10",
+];
 
 export default function Home() {
   const navigate = useNavigate();
@@ -66,6 +75,18 @@ export default function Home() {
                 your certificate.
               </p>
 
+              {/* trust badges */}
+              <ul className="mt-6 flex flex-wrap gap-2">
+                {heroBadges.map((b) => (
+                  <li key={b} className="inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-3 py-1 text-xs font-semibold text-ink">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-saffron-600">
+                      <path d="M20 6L9 17l-5-5" />
+                    </svg>
+                    {b}
+                  </li>
+                ))}
+              </ul>
+
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <button
                   onClick={() => (isAuthenticated ? navigate(roleHome(user?.role)) : openAuth("register"))}
@@ -95,6 +116,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ---------- PROMO CAROUSEL ---------- */}
+      <PromoCarousel />
+
       {/* ---------- ANNOUNCEMENTS ---------- */}
       <AnnouncementsSection />
 
@@ -117,40 +141,88 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- ADMISSION PROGRAMS ---------- */}
+      {/* ---------- EXPERTISE / GUIDANCE ---------- */}
       <section id="programs" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-        <SectionHead eyebrow="Admissions we handle" title="Open-board admissions we process"
-          sub="We take direct admissions for the three recognised open boards. Pick one to start your admission." />
-        <div className="mt-8 flex flex-wrap gap-2.5">
-          {admissionPrograms.map((p) => (
-            <button
-              key={p}
-              onClick={() => startAdmission(null)}
-              className="rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-ink transition hover:border-saffron hover:bg-saffron/10"
-            >
-              {p}
-            </button>
-          ))}
-        </div>
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-ink to-ink-soft p-6 shadow-2xl shadow-ink/20 ring-1 ring-saffron/30 sm:p-10">
+          <div aria-hidden className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-saffron/25 blur-3xl" />
+          <div aria-hidden className="pointer-events-none absolute -bottom-24 -left-16 h-64 w-64 rounded-full bg-indigo-deep/40 blur-3xl" />
 
-        {/* Counselling-only programs — we guide, we don't process the admission. */}
-        <div className="mt-10">
-          <h3 className="font-display text-lg font-bold text-ink">Need something else? We counsel you for it</h3>
-          <p className="mt-1 text-sm text-muted">
-            For these we don't process the admission — our counsellors help you choose and apply the right way.
-          </p>
-          <div className="mt-5 flex flex-wrap gap-2.5">
-            {counsellingPrograms.map((p) => (
-              <button
-                key={p}
-                onClick={openCounselling}
-                className="rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-muted transition hover:border-ink/30 hover:text-ink"
-              >
-                {p}
-              </button>
-            ))}
+          <div className="relative">
+            <span className="inline-flex items-center gap-2 rounded-full bg-saffron px-3 py-1 text-xs font-bold uppercase tracking-wide text-ink">
+              <span className="h-1.5 w-1.5 rounded-full bg-ink" />
+              Our Expertise
+            </span>
+            <h2 className="mt-4 max-w-3xl font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Personalized Career Advice &amp; <span className="text-saffron">Admission Guidance</span>
+            </h2>
+            <p className="mt-3 max-w-3xl text-base leading-relaxed text-indigo-100/85">
+              Every student's journey is unique. Our experienced counsellors provide personalized career
+              advice and end-to-end admission guidance so you can make informed decisions with confidence.
+            </p>
+            <p className="mt-3 max-w-3xl text-sm leading-relaxed text-indigo-100/70">
+              Whether you plan to study in India or abroad, we assist you at every step — from career
+              counselling and course selection to college shortlisting, application support,
+              documentation, and admission assistance.
+            </p>
+
+            {/* What we help with */}
+            <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {expertise.map((item) => (
+                <div key={item} className="flex items-start gap-3 rounded-2xl bg-white/95 p-4 shadow-sm ring-1 ring-white/10">
+                  <span className="grid h-8 w-8 flex-none place-items-center rounded-lg bg-saffron text-white">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 6L9 17l-5-5" />
+                    </svg>
+                  </span>
+                  <p className="text-sm font-semibold text-ink">{item}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
+
+        {/* Direct open-board admissions CTA — temporarily hidden */}
+        {false && (
+          <div className="mt-10 rounded-2xl border border-line bg-canvas p-5 sm:p-6">
+            <h3 className="font-display text-lg font-bold text-ink">Ready to enrol? We take direct admissions for open boards</h3>
+            <p className="mt-1 text-sm text-muted">
+              NIOS · BBOSE · BOSSE — for Class 10th, 11th &amp; 12th. Pick one to start your admission.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2.5">
+              {admissionPrograms.map((p) => (
+                <button
+                  key={p}
+                  onClick={() => startAdmission(null)}
+                  className="rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-ink transition hover:border-saffron hover:bg-saffron/10"
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Guidance for other programs — temporarily hidden */}
+        {false && (
+          <div className="mt-6">
+            <h3 className="font-display text-lg font-bold text-ink">Exploring other paths? We'll guide you</h3>
+            <p className="mt-1 text-sm text-muted">
+              From school and open boards to UG, PG, professional courses and study abroad — talk to a
+              counsellor and we'll help you choose and apply the right way.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2.5">
+              {counsellingPrograms.map((p) => (
+                <button
+                  key={p}
+                  onClick={openCounselling}
+                  className="rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-muted transition hover:border-ink/30 hover:text-ink"
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
 
       {/* ---------- COURSES ---------- */}
@@ -158,8 +230,36 @@ export default function Home() {
         <SectionHead eyebrow="Courses" title="Pick a course and start your admission"
           sub="Every course below is available through open schooling. Click apply and a counsellor confirms your eligibility." />
         <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {courses.map((c) => (
-            <CourseCard key={c.id} course={c} onApply={startAdmission} />
+          {courses.map((c, i) => (
+            <CourseCard key={c.id} course={c} onApply={startAdmission} index={i} />
+          ))}
+        </div>
+      </section>
+
+      {/* ---------- LEARNING JOURNEY ---------- */}
+      <section id="journey" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+        <SectionHead eyebrow="How it works" title="Your learning journey with us"
+          sub="A complete online learning ecosystem — from admission to certificate, with live classes, study materials and full LMS support." />
+        <div className="mt-9 grid gap-5 lg:grid-cols-3">
+          {learningSteps.map((s, i) => (
+            <div key={s.step} className={`relative flex flex-col rounded-2xl border border-line bg-white p-6 transition duration-200 hover:-translate-y-1 hover:shadow-lg ${journeyHovers[i % journeyHovers.length]}`}>
+              <div className="flex items-center justify-between">
+                <span className="font-display text-3xl font-extrabold text-line">{s.step}</span>
+                <span className="rounded-full bg-ink/5 px-3 py-1 text-xs font-semibold text-ink">{s.tag}</span>
+              </div>
+              <h3 className="mt-4 font-display text-lg font-bold text-ink">{s.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted">{s.desc}</p>
+              <ul className="mt-4 space-y-2">
+                {s.points.map((p) => (
+                  <li key={p} className="flex items-start gap-2 text-sm text-ink/90">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 flex-none text-teal-deep">
+                      <path d="M20 6L9 17l-5-5" />
+                    </svg>
+                    {p}
+                  </li>
+                ))}
+              </ul>
+            </div>
           ))}
         </div>
       </section>
@@ -188,13 +288,13 @@ export default function Home() {
       </section>
 
       {/* ---------- TESTIMONIALS ---------- */}
-      <section id="testimonials" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-        <SectionHead eyebrow="Testimonials" title="Students who found their way forward"
-          sub="Real stories from learners we've guided through open-board admissions and counselling." />
-        <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {testimonials.map((t) => (
-            <TestimonialCard key={t.name} testimonial={t} />
-          ))}
+      <section id="testimonials" className="py-14">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <SectionHead eyebrow="Testimonials" title="Students who found their way forward"
+            sub="Real stories from learners we've guided through open-board admissions and counselling." />
+        </div>
+        <div className="mt-9">
+          <TestimonialsMarquee testimonials={testimonials} />
         </div>
       </section>
 

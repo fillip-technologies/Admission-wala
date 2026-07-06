@@ -5,9 +5,16 @@ const levelStyles = {
   Certificate: "bg-ink/10 text-ink",
 };
 
-export default function CourseCard({ course, onApply }) {
+// Hover colour cycled across course cards. Full literal strings for Tailwind JIT.
+const hoverStyles = [
+  "hover:border-saffron hover:bg-saffron/5 hover:shadow-saffron/10",
+  "hover:border-teal-deep hover:bg-teal-deep/5 hover:shadow-teal-deep/10",
+  "hover:border-indigo-deep hover:bg-indigo-deep/5 hover:shadow-indigo-deep/10",
+];
+
+export default function CourseCard({ course, onApply, index = 0 }) {
   return (
-    <article className="group flex flex-col rounded-2xl border border-line bg-white p-5 transition hover:-translate-y-1 hover:border-ink/20 hover:shadow-[0_18px_40px_-24px_rgba(30,27,75,0.45)]">
+    <article className={`group flex flex-col rounded-2xl border border-line bg-white p-5 transition duration-200 hover:-translate-y-1 hover:shadow-lg ${hoverStyles[index % hoverStyles.length]}`}>
       <div className="mb-3 flex items-center justify-between">
         <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${levelStyles[course.level] || "bg-ink/10 text-ink"}`}>
           {course.level}
