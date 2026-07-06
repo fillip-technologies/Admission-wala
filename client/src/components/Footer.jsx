@@ -2,14 +2,15 @@ const quickLinks = [
   { label: "Home", href: "/" },
   { label: "Boards", href: "/#boards" },
   { label: "Courses", href: "/#courses" },
-  { label: "Counselling", href: "/#counselling" },
-  { label: "Login", href: "/login" },
+  { label: "Blog", href: "/blogs" },
+  { label: "Testimonials", href: "/#testimonials" },
+  { label: "FAQ", href: "/#faqs" },
 ];
 
 const phones = [
-  { display: "+91 84098 35444", tel: "+918409835444" },
   { display: "+91 82105 34132", tel: "+918210534132" },
   { display: "+91 62993 36404", tel: "+916299336404" },
+  { display: "+91 84098 35444", tel: "+918409835444" },
 ];
 
 export default function Footer() {

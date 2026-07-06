@@ -24,16 +24,8 @@ export const createAdmission = asyncHandler(async (req, res) => {
     throw new ApiError(STATUS_CODES.BAD_REQUEST, "Please select a valid admission program");
 
 
-  const existing = await Admission.findOne({
-    user: req.user,
-    status: { $ne: "rejected" },
-  });
-  if (existing)
-    throw new ApiError(
-      STATUS_CODES.CONFLICT,
-      "You already have an active admission application",
-    );
-
+  // Students may hold multiple applications (e.g. one per board/program), so we
+  // no longer block a second active application here.
   const files = req.files || [];
   const documents = [];
   for (const file of files) {

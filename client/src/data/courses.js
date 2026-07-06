@@ -2,7 +2,7 @@ export const boards = [
   { code: "NIOS", name: "National Institute of Open Schooling", tag: "Most chosen",
     blurb: "India's largest open school, recognised nationwide. Flexible exams and on-demand options for Secondary and Senior Secondary." },
   { code: "BBOSE", name: "Bihar Board of Open Schooling & Examination", tag: "Bihar",
-    blurb: "State open board for Bihar learners. A practical route to complete Class 10th and 12th at your own pace." },
+    blurb: "State open board for Bihar learners. A practical route to complete Class 10th, 11th and 12th at your own pace." },
   { code: "BOSSE", name: "Board of Open Schooling & Skill Education", tag: "Skill-focused",
     blurb: "Sikkim's open board with a strong focus on skill-linked certification alongside academics." },
 ];
@@ -10,6 +10,12 @@ export const boards = [
 export const courses = [
   { id: "secondary", title: "Class 10th — Secondary", level: "Foundation", duration: "1 year", boards: ["NIOS", "BBOSE", "BOSSE"],
     description: "Complete your matriculation through open schooling. Ideal for re-admission, dropouts, and working learners." },
+  { id: "sr11-science", title: "Class 11th — Science", level: "Senior Secondary", duration: "1 year", boards: ["NIOS", "BBOSE", "BOSSE"],
+    description: "Physics, Chemistry, Biology / Maths. Build a strong base for Class 12th and competitive exams." },
+  { id: "sr11-commerce", title: "Class 11th — Commerce", level: "Senior Secondary", duration: "1 year", boards: ["NIOS", "BBOSE"],
+    description: "Accountancy, Business Studies and Economics — the foundation year of your commerce stream." },
+  { id: "sr11-arts", title: "Class 11th — Arts / Humanities", level: "Senior Secondary", duration: "1 year", boards: ["NIOS", "BBOSE", "BOSSE"],
+    description: "History, Political Science, Sociology and languages — a flexible base for further studies." },
   { id: "sr-science", title: "Class 12th — Science", level: "Senior Secondary", duration: "1 year", boards: ["NIOS", "BBOSE", "BOSSE"],
     description: "Physics, Chemistry, Biology / Maths. Keep medical and engineering pathways open with a recognised certificate." },
   { id: "sr-commerce", title: "Class 12th — Commerce", level: "Senior Secondary", duration: "1 year", boards: ["NIOS", "BBOSE"],
@@ -22,11 +28,18 @@ export const courses = [
     description: "Job-ready certifications you can stack with your board admission. Counsellor helps you pick the right track." },
 ];
 
-// Full range of admissions the consultancy handles (beyond the open-school
-// boards above). Shown as a chip list on the home page.
+// Admissions we take directly — the three open-school boards. Clicking these
+// starts the admission flow.
 export const admissionPrograms = [
-  "School Admission",
   "NIOS Admission",
+  "BBOSE Admission",
+  "BOSSE Admission",
+];
+
+// Everything else: we don't process the admission ourselves, we only guide the
+// student. Clicking these opens the counselling popup instead.
+export const counsellingPrograms = [
+  "School Admission",
   "Diploma Admission",
   "UG Admission",
   "PG Admission",

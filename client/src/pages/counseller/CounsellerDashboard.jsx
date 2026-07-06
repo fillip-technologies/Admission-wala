@@ -3,6 +3,8 @@ import {
   counsellingApi,
   COUNSELLING_STATUS_LABEL,
 } from "../../features/counselling/counselling.api";
+import { admissionApi } from "../../features/admission/admission.api";
+import { STATUS_LABEL as ADMISSION_STATUS_LABEL } from "../../features/admission/statuses";
 import Button from "../../components/ui/Button";
 import Spinner from "../../components/ui/Spinner";
 
@@ -10,10 +12,18 @@ const getError = (err) =>
   err?.response?.data?.message || err?.message || "Something went wrong";
 
 const STATUS_OPTIONS = ["assigned", "scheduled", "completed", "cancelled"];
+const ADMISSION_STATUS_OPTIONS = [
+  "submitted",
+  "under_review",
+  "documents_verified",
+  "approved",
+  "rejected",
+];
 
 export default function CounsellerDashboard() {
   const [open, setOpen] = useState([]);
   const [mine, setMine] = useState([]);
+  const [admissions, setAdmissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [busyId, setBusyId] = useState(null);
@@ -23,12 +33,14 @@ export default function CounsellerDashboard() {
     setLoading(true);
     setError(null);
     try {
-      const [openRes, mineRes] = await Promise.all([
+      const [openRes, mineRes, admRes] = await Promise.all([
         counsellingApi.list("open"),
         counsellingApi.list("assigned"),
+        admissionApi.all(),
       ]);
       setOpen(openRes?.data?.data ?? []);
       setMine(mineRes?.data?.data ?? []);
+      setAdmissions(admRes?.data?.data ?? []);
     } catch (err) {
       setError(getError(err));
     } finally {
@@ -57,6 +69,18 @@ export default function CounsellerDashboard() {
     setBusyId(id);
     try {
       await counsellingApi.updateStatus(id, { status });
+      await load();
+    } catch (err) {
+      setError(getError(err));
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const setAdmissionStatus = async (id, status) => {
+    setBusyId(id);
+    try {
+      await admissionApi.updateStatus(id, { status });
       await load();
     } catch (err) {
       setError(getError(err));
@@ -101,8 +125,76 @@ export default function CounsellerDashboard() {
         </p>
       )}
 
-      {/* open requests */}
+      {/* admission applications */}
       <section className="mt-6">
+        <h2 className="font-display text-lg font-bold text-ink">
+          Admission applications <span className="text-muted">({admissions.length})</span>
+        </h2>
+        {admissions.length === 0 ? (
+          <p className="mt-3 rounded-2xl border border-dashed border-line bg-white p-6 text-center text-sm text-muted">
+            No admission applications yet.
+          </p>
+        ) : (
+          <ul className="mt-3 space-y-3">
+            {admissions.map((a) => (
+              <li key={a._id} className="rounded-2xl border border-line bg-white p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-ink">
+                      {a.program || a.course || "Admission"} · Class {a.classType}
+                    </p>
+                    <p className="mt-1 text-xs text-muted">
+                      {a.user?.name} · {a.user?.email} · {a.user?.mobile_number}
+                    </p>
+                    <p className="mt-1 text-xs text-muted">
+                      Board: {a.board === "Other" ? a.customBoard : a.board}
+                    </p>
+                    {a.documents?.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {a.documents.map((d, i) => (
+                          <a
+                            key={i}
+                            href={d.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="rounded-md border border-line px-2 py-0.5 text-[11px] font-semibold text-ink/70 hover:border-ink/30"
+                          >
+                            {d.label || `Document ${i + 1}`}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <span className="flex-none rounded-full bg-saffron-100 px-3 py-1 text-xs font-semibold text-saffron-600">
+                    {ADMISSION_STATUS_LABEL[a.status] || a.status}
+                  </span>
+                </div>
+
+                {/* status controls */}
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  {ADMISSION_STATUS_OPTIONS.map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => setAdmissionStatus(a._id, s)}
+                      disabled={busyId === a._id || a.status === s}
+                      className={`rounded-lg border px-2.5 py-1 text-xs font-semibold transition disabled:opacity-50 ${
+                        a.status === s
+                          ? "border-ink bg-ink text-white"
+                          : "border-line text-ink hover:border-ink/30"
+                      }`}
+                    >
+                      {ADMISSION_STATUS_LABEL[s]}
+                    </button>
+                  ))}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      {/* open requests */}
+      <section className="mt-8">
         <h2 className="font-display text-lg font-bold text-ink">
           Open requests <span className="text-muted">({open.length})</span>
         </h2>

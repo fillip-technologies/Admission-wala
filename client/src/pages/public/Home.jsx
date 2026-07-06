@@ -6,8 +6,13 @@ import { roleHome, ROLES } from "../../config/roles";
 import { PATHS } from "../../routes/paths";
 import CourseCard from "../../components/CourseCard";
 import CounsellingPopup from "../../components/CounsellingPopup";
+import AnnouncementsSection from "../../components/AnnouncementsSection";
 import { useAuthModal } from "../../components/auth/AuthModalProvider";
-import { boards, courses, trustStats, admissionPrograms } from "../../data/courses";
+import { boards, courses, trustStats, admissionPrograms, counsellingPrograms } from "../../data/courses";
+import { testimonials } from "../../data/testimonials";
+import { faqs } from "../../data/faqs";
+import TestimonialCard from "../../components/TestimonialCard";
+import FaqAccordion from "../../components/FaqAccordion";
 import heroStudent from "../../assets/hero-student.png";
 
 export default function Home() {
@@ -37,7 +42,7 @@ export default function Home() {
       {/* ---------- HERO ---------- */}
       <section className="relative overflow-hidden">
         <div aria-hidden className="pointer-events-none absolute -top-24 right-0 h-96 w-96 rounded-full bg-saffron/15 blur-3xl" />
-        <div className="relative mx-auto max-w-6xl px-4 pb-16 sm:px-6 sm:pb-20 lg:pb-24">
+        <div className="relative mx-auto max-w-6xl px-4 pb-8 sm:px-6 sm:pb-10 lg:pb-12">
           <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
             <div className="max-w-xl">
               <span className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-3 py-1 text-xs font-semibold text-ink">
@@ -56,7 +61,7 @@ export default function Home() {
               </h1>
 
               <p className="mt-5 text-lg leading-relaxed text-muted">
-                Shree Admission Gurukul helps you complete Class 10th and 12th through recognised
+                Shree Admission Gurukul helps you complete Class 10th, 11th and 12th through recognised
                 open boards — with a counsellor guiding every step, from course choice to
                 your certificate.
               </p>
@@ -90,6 +95,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ---------- ANNOUNCEMENTS ---------- */}
+      <AnnouncementsSection />
+
       {/* ---------- BOARDS ---------- */}
       <section id="boards" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
         <SectionHead eyebrow="Choose your board" title="Three recognised paths, one simple admission"
@@ -111,8 +119,8 @@ export default function Home() {
 
       {/* ---------- ADMISSION PROGRAMS ---------- */}
       <section id="programs" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-        <SectionHead eyebrow="Admissions we handle" title="One place for every admission"
-          sub="From school and open boards to UG, PG and study abroad — our counsellors guide you into the right programme." />
+        <SectionHead eyebrow="Admissions we handle" title="Open-board admissions we process"
+          sub="We take direct admissions for the three recognised open boards. Pick one to start your admission." />
         <div className="mt-8 flex flex-wrap gap-2.5">
           {admissionPrograms.map((p) => (
             <button
@@ -123,6 +131,25 @@ export default function Home() {
               {p}
             </button>
           ))}
+        </div>
+
+        {/* Counselling-only programs — we guide, we don't process the admission. */}
+        <div className="mt-10">
+          <h3 className="font-display text-lg font-bold text-ink">Need something else? We counsel you for it</h3>
+          <p className="mt-1 text-sm text-muted">
+            For these we don't process the admission — our counsellors help you choose and apply the right way.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-2.5">
+            {counsellingPrograms.map((p) => (
+              <button
+                key={p}
+                onClick={openCounselling}
+                className="rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-muted transition hover:border-ink/30 hover:text-ink"
+              >
+                {p}
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -157,6 +184,26 @@ export default function Home() {
             className="rounded-xl bg-ink px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-ink-soft">
             Start your learning journey today
           </button>
+        </div>
+      </section>
+
+      {/* ---------- TESTIMONIALS ---------- */}
+      <section id="testimonials" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+        <SectionHead eyebrow="Testimonials" title="Students who found their way forward"
+          sub="Real stories from learners we've guided through open-board admissions and counselling." />
+        <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {testimonials.map((t) => (
+            <TestimonialCard key={t.name} testimonial={t} />
+          ))}
+        </div>
+      </section>
+
+      {/* ---------- FAQ ---------- */}
+      <section id="faqs" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+        <SectionHead eyebrow="FAQ" title="Frequently asked questions"
+          sub="The things students ask us most. Still unsure? Book a free counselling session." />
+        <div className="mt-9 max-w-3xl">
+          <FaqAccordion faqs={faqs} />
         </div>
       </section>
 

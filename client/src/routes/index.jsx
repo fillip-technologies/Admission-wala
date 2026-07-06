@@ -14,6 +14,8 @@ import { ROLES } from "../config/roles";
 
 // Public
 const Home    = lazy(() => import("../pages/public/Home"));
+const Blogs    = lazy(() => import("../pages/public/Blogs"));
+const BlogPost = lazy(() => import("../pages/public/BlogPost"));
 const NotFound = lazy(() => import("../pages/public/NotFound"));
 
 // Auth
@@ -26,16 +28,19 @@ const ForgotPassword = lazy(() => import("../pages/auth/ForgotPassword"));
 const StudentDashboard = lazy(() => import("../pages/student/StudentDashboard"));
 const Admission        = lazy(() => import("../pages/student/Admission"));
 const Counselling      = lazy(() => import("../pages/student/Counselling"));
+const StudentTickets   = lazy(() => import("../pages/student/Tickets"));
 const Profile          = lazy(() => import("../pages/student/Profile"));
 
 // Counseller
 const CounsellerDashboard = lazy(() => import("../pages/counseller/CounsellerDashboard"));
+const CounsellerTickets   = lazy(() => import("../pages/counseller/Tickets"));
 
 // Admin
 const AdminDashboard = lazy(() => import("../pages/admin/AdminDashboard"));
 const Students       = lazy(() => import("../pages/admin/Students"));
 const Enquiry        = lazy(() => import("../pages/admin/Enquiry"));
 const Counsellers    = lazy(() => import("../pages/admin/Counsellers"));
+const Announcements  = lazy(() => import("../pages/admin/Announcements"));
 const Reports        = lazy(() => import("../pages/admin/Reports"));
 
 export const router = createBrowserRouter([
@@ -47,7 +52,11 @@ export const router = createBrowserRouter([
       // ── public ──────────────────────────────────────────────────────────
       {
         element: <PublicLayout />,
-        children: [{ index: true, element: <Home /> }],
+        children: [
+          { index: true, element: <Home /> },
+          { path: "blogs", element: <Blogs /> },
+          { path: "blogs/:slug", element: <BlogPost /> },
+        ],
       },
 
       // ── auth (blocked for logged-in users) ──────────────────────────────
@@ -77,6 +86,7 @@ export const router = createBrowserRouter([
               { index: true,        element: <StudentDashboard /> },
               { path: "admission",  element: <Admission />        },
               { path: "counselling", element: <Counselling />     },
+              { path: "tickets",    element: <StudentTickets />   },
               { path: "profile",    element: <Profile />          },
             ],
           },
@@ -92,6 +102,7 @@ export const router = createBrowserRouter([
             element: <DashboardLayout />,
             children: [
               { index: true, element: <CounsellerDashboard /> },
+              { path: "tickets", element: <CounsellerTickets /> },
             ],
           },
         ],
@@ -109,6 +120,7 @@ export const router = createBrowserRouter([
               { path: "students",    element: <Students />       },
               { path: "enquiry",     element: <Enquiry />        },
               { path: "counsellers", element: <Counsellers />    },
+              { path: "announcements", element: <Announcements /> },
               { path: "reports",     element: <Reports />        },
             ],
           },

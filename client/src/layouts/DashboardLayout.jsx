@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
 import { selectAuth } from "../features/auth/auth.slice";
 import Sidebar from "../components/Sidebar";
+import NotificationDrawer from "../components/NotificationDrawer";
 import PageLoader from "../components/ui/PageLoader";
 
 
@@ -46,6 +47,7 @@ export default function DashboardLayout() {
           </button>
 
           <div className="ml-auto flex items-center gap-3">
+            <NotificationDrawer />
             <div className="text-right">
               <p className="text-sm font-semibold text-ink">{user?.name}</p>
               <p className="text-xs capitalize text-muted">{role}</p>

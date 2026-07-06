@@ -6,6 +6,7 @@ export const navConfig = {
     { to: PATHS.STUDENT.ROOT,       label: "Dashboard",   end: true, icon: "grid"        },
     { to: PATHS.STUDENT.ADMISSION,  label: "My Admission",           icon: "doc"         },
     { to: PATHS.STUDENT.COUNSELLING, label: "Counselling",           icon: "counsellers" },
+    { to: PATHS.STUDENT.TICKETS,    label: "Support",                icon: "inbox"       },
     { to: PATHS.STUDENT.PROFILE,    label: "Profile",                icon: "user"        },
   ],
   [ROLES.ADMIN]: [
@@ -13,10 +14,12 @@ export const navConfig = {
     { to: PATHS.ADMIN.STUDENTS,     label: "Students",              icon: "users"       },
     { to: PATHS.ADMIN.ENQUIRY,      label: "Enquiry",               icon: "inbox"       },
     { to: PATHS.ADMIN.COUNSELLERS,  label: "Counsellers",           icon: "counsellers" },
+    { to: PATHS.ADMIN.ANNOUNCEMENTS, label: "Announcements",        icon: "bell"        },
     { to: PATHS.ADMIN.REPORTS,      label: "Reports",               icon: "chart"       },
   ],
   [ROLES.COUNSELLER]: [
     { to: PATHS.COUNSELLER.ROOT, label: "Appointments", end: true, icon: "counsellers" },
+    { to: PATHS.COUNSELLER.TICKETS, label: "Support Tickets",       icon: "inbox"       },
   ],
 };
 
@@ -29,6 +32,7 @@ export const NavIcon = ({ name, className = "h-4 w-4" }) => {
     inbox:       "M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zM2 10h20M12 14v4",
     counsellers: "M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75",
     chart:       "M3 3v18h18M7 15l3-4 3 3 4-6",
+    bell:        "M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0",
   };
   return (
     <svg

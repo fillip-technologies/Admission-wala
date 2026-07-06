@@ -91,7 +91,8 @@ export default function Admission() {
   const [params] = useSearchParams();
   const presetCourse = params.get("course");
 
-  const [admission, setAdmission] = useState(null);
+  const [admissions, setAdmissions] = useState([]);
+  const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -110,9 +111,9 @@ export default function Admission() {
     try {
       const res = await admissionApi.mine();
       const list = res?.data?.data ?? [];
-      // Show the active (non-rejected) application if any, else latest.
-      const active = list.find((a) => a.status !== "rejected") || list[0] || null;
-      setAdmission(active);
+      setAdmissions(list);
+      // Show the form by default only when there are no applications yet.
+      setShowForm(list.length === 0);
     } catch (err) {
       setError(getError(err));
     } finally {
@@ -154,6 +155,9 @@ export default function Admission() {
       files.forEach((file) => fd.append("documents", file));
 
       await admissionApi.create(fd);
+      setForm({ program: "", board: "", customBoard: "", classType: "", course: "" });
+      setFiles([]);
+      setShowForm(false);
       await load();
     } catch (err) {
       setError(getError(err));
@@ -172,17 +176,26 @@ export default function Admission() {
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-bold text-ink">My Admission</h1>
-      <p className="mt-1 text-sm text-muted">
-        {admission
-          ? "Track the progress of your admission application."
-          : "Start a new admission application."}
-      </p>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-ink">My Admissions</h1>
+          <p className="mt-1 text-sm text-muted">
+            Track your applications or start a new one.
+          </p>
+        </div>
+        {admissions.length > 0 && (
+          <Button onClick={() => setShowForm((s) => !s)} className="flex-none px-4 py-2 text-sm">
+            {showForm ? "Cancel" : "New application"}
+          </Button>
+        )}
+      </div>
 
-      <div className="mt-6">
-        {admission ? (
-          <Timeline admission={admission} />
-        ) : (
+      <div className="mt-6 space-y-4">
+        {admissions.map((a) => (
+          <Timeline key={a._id} admission={a} />
+        ))}
+
+        {showForm && (
           <div className="rounded-2xl border border-line bg-white p-6">
             <div className="space-y-4">
               <label className="block">
@@ -296,7 +309,7 @@ export default function Admission() {
             </Button>
           </div>
         )}
-        {admission && error && (
+        {!showForm && error && (
           <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600">
             {error}
           </p>

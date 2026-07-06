@@ -1,6 +1,7 @@
 
 export const PATHS = {
   HOME: "/",
+  BLOGS: "/blogs",
   LOGIN: "/login",
   SIGNUP: "/signup",
   VERIFY_EMAIL: "/verify-email",
@@ -10,6 +11,7 @@ export const PATHS = {
     ROOT: "/student",
     ADMISSION: "/student/admission",
     COUNSELLING: "/student/counselling",
+    TICKETS: "/student/tickets",
     PROFILE: "/student/profile",
   },
 
@@ -18,11 +20,13 @@ export const PATHS = {
     STUDENTS: "/admin/students",
     ENQUIRY: "/admin/enquiry",
     COUNSELLERS: "/admin/counsellers",
+    ANNOUNCEMENTS: "/admin/announcements",
     REPORTS: "/admin/reports",
   },
 
   COUNSELLER : {
     ROOT: "/counseller",
+    TICKETS: "/counseller/tickets",
   }
   
 };

@@ -205,6 +205,7 @@ export default function CounsellingPopup({ openSignal = 0 }) {
               </Select>
               <Select label="Class" name="classType" value={form.classType} onChange={handleChange}>
                 <option value="10th">Class 10th</option>
+                <option value="11th">Class 11th</option>
                 <option value="12th">Class 12th</option>
               </Select>
             </div>
