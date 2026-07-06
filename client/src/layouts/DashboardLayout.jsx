@@ -1,13 +1,12 @@
 import { Suspense, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { logoutUser, selectAuth } from "../features/auth/auth.slice";
+import { useAppSelector } from "../app/hooks";
+import { selectAuth } from "../features/auth/auth.slice";
 import Sidebar from "../components/Sidebar";
 import PageLoader from "../components/ui/PageLoader";
 
 
 export default function DashboardLayout() {
-  const dispatch = useAppDispatch();
   const { user } = useAppSelector(selectAuth);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -54,12 +53,6 @@ export default function DashboardLayout() {
             <span className="grid h-9 w-9 place-items-center rounded-full bg-ink text-sm font-bold text-saffron">
               {user?.name?.[0]?.toUpperCase() || "U"}
             </span>
-            <button
-              onClick={() => dispatch(logoutUser())}
-              className="rounded-lg border border-line px-3 py-2 text-sm font-semibold text-ink transition hover:bg-white"
-            >
-              Log out
-            </button>
           </div>
         </header>
 

@@ -146,7 +146,7 @@ export default function AuthModal({ view, setView, onClose }) {
 
   const titles = {
     login: ["Welcome back", "Log in to track your admission and counselling."],
-    register: ["Create your account", "Start your admission journey with Shri Admission Gurukul."],
+    register: ["Create your account", "Start your admission journey with Shree Admission Gurukul."],
     verify: ["Verify your email", "Enter the 6-digit code we sent to your email address."],
     forgot: [
       "Reset your password",
@@ -260,7 +260,21 @@ export default function AuthModal({ view, setView, onClose }) {
           <p className="mt-3 rounded-lg bg-teal-deep/10 px-3 py-2 text-sm font-medium text-teal-deep">{notice}</p>
         )}
         {error && (
-          <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600">{error}</p>
+          <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600">
+            {error}
+            {view === "login" && /please verify your email/i.test(error) && (
+              <>
+                {" "}
+                <button
+                  type="button"
+                  onClick={() => goVerify(login.email)}
+                  className="font-semibold text-red-700 underline"
+                >
+                  Verify now
+                </button>
+              </>
+            )}
+          </p>
         )}
 
         {/* ---- primary action ---- */}

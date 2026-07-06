@@ -13,7 +13,7 @@ export default function AuthLayout() {
             SAG
           </span>
           <span className="font-display text-lg font-bold tracking-tight text-ink">
-            Shri Admission <span className="text-saffron">Gurukul</span>
+            Shree Admission <span className="text-saffron">Gurukul</span>
           </span>
         </Link>
         <p className="mb-6 -mt-4 text-center text-xs text-muted">A unit of Tribac Blue</p>

@@ -19,12 +19,12 @@ export default function Footer() {
         {/* Brand */}
         <div>
           <p className="font-display text-lg font-bold text-white">
-            Shri Admission <span className="text-saffron">Gurukul</span>
+            Shree Admission <span className="text-saffron">Gurukul</span>
           </p>
           <p className="mt-2 text-sm">
             A unit of{" "}
             <a href="https://www.tribacblue.com/" className="text-saffron hover:text-saffron-600">
-              Tribac Blue.
+              Tribac Blue Classes.
             </a>
           </p>
         </div>
@@ -65,7 +65,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-5 text-xs sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <p>© {new Date().getFullYear()} Shri Admission Gurukul. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Shree Admission Gurukul. All rights reserved.</p>
           <p>
             Made by{" "}
             <a href="https://filliptechnologies.com/" className="text-saffron hover:text-saffron-600">

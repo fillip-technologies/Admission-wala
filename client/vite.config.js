@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite'
 // calls to the Render backend server-side. This keeps the auth cookie
 // first-party (localhost), avoiding third-party-cookie blocking that breaks
 // a local frontend talking directly to an onrender.com backend.
-const BACKEND = 'https://admission-wala-e8wn.onrender.com'
+const BACKEND = 'http://localhost:3000'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
@@ -14,9 +14,9 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: BACKEND,
-        changeOrigin: true,   // set Host header to the Render domain (routing + TLS SNI)
-        secure: true,         // Render has a valid TLS cert
-        cookieDomainRewrite: 'localhost', // store the backend's cookie on localhost
+        changeOrigin: true,   
+        secure: true,         
+        cookieDomainRewrite: 'localhost', 
       },
     },
   },

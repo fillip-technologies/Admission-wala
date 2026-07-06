@@ -24,7 +24,7 @@ export default function Navbar() {
             SAG
           </span>
           <span className="font-display text-lg font-bold tracking-tight text-ink">
-            Shri Admission <span className="text-saffron">Gurukul</span>
+            Shree Admission <span className="text-saffron">Gurukul</span>
           </span>
         </Link>
 

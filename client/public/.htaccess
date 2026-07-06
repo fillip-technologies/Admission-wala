@@ -5,15 +5,24 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
-  # If the requested path isn't a real file or directory, serve index.html.
+  # Never rewrite /assets requests to index.html — if a hashed file is missing
+  # (bad upload), let it 404 cleanly instead of silently serving HTML (which
+  # causes "Failed to fetch dynamically imported module").
+  RewriteRule ^assets/ - [L]
+  # Otherwise, SPA fallback: non-file requests go to index.html for the router.
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^ index.html [L]
 </IfModule>
 
-# Cache hashed assets aggressively; they change name on every build.
 <IfModule mod_headers.c>
+  # Hashed assets never change contents for a given name -> cache forever.
   <FilesMatch "\.(js|css|woff2?|png|jpg|jpeg|svg|webp)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  # index.html must NOT be cached, or users keep loading old chunk references
+  # after a new deploy.
+  <FilesMatch "^index\.html$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
   </FilesMatch>
 </IfModule>

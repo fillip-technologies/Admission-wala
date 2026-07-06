@@ -37,23 +37,44 @@ export const registerUser = asyncHandler(async (req, res) => {
 
   const existingUser = await User.findOne({ email: email });
 
-  if (existingUser)
+  // A verified account with this email can't be re-registered. An *unverified*
+  // one is allowed to register again — that's how someone who never received
+  // (or lost) their first OTP recovers instead of being stuck forever.
+  if (existingUser && existingUser.isEmailVerified)
     throw new ApiError(STATUS_CODES.CONFLICT, "User already exists");
 
-  const user = await User.create({
-    name: name,
-    email: email,
-    mobile_number: mobile_number,
-    password: password,
-    role: "student"
-  });
+  // Send the verification email BEFORE persisting. If mail delivery fails we
+  // throw here and never leave a half-created, unverifiable account behind.
+  const otp = await issueOtp({ email, purpose: "email_verification" });
+  try {
+    await sendMail({
+      to: email,
+      subject: "Verify your email - Shri Admission Gurukul",
+      html: otpEmail(name, otp, "email verification"),
+    });
+  } catch (err) {
+    throw new ApiError(
+      STATUS_CODES.INTERNAL_SERVER_ERROR,
+      "Could not send the verification email. Please try again in a moment.",
+    );
+  }
 
-  const otp = await issueOtp({ email: user.email, purpose: "email_verification" });
-  await sendMail({
-    to: user.email,
-    subject: "Verify your email - Shri Admission Gurukul",
-    html: otpEmail(user.name, otp, "email verification"),
-  });
+  let user;
+  if (existingUser) {
+    // Refresh the unverified account's details and re-issue the OTP above.
+    existingUser.name = name;
+    existingUser.mobile_number = mobile_number;
+    existingUser.password = password;
+    user = await existingUser.save();
+  } else {
+    user = await User.create({
+      name: name,
+      email: email,
+      mobile_number: mobile_number,
+      password: password,
+      role: "student",
+    });
+  }
 
   res
     .status(STATUS_CODES.CREATED)

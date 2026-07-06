@@ -12,6 +12,14 @@ export const transporter = nodemailer.createTransport({
     user: smtpUser,
     pass: smtpPass,
   },
+  // Force IPv4. On hosts without a working IPv6 route, Node resolves
+  // smtp.gmail.com to an AAAA (IPv6) record first and the connection fails with
+  // ENETUNREACH — the whole request then hangs on the SMTP timeout.
+  family: 4,
+  // Fail fast instead of leaving the request spinning if SMTP is unreachable.
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 15000,
 });
 
 if (smtpUser && smtpPass) {

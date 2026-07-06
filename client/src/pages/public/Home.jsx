@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { selectAuth } from "../../features/auth/auth.slice";
-import { roleHome } from "../../config/roles";
+import { roleHome, ROLES } from "../../config/roles";
 import { PATHS } from "../../routes/paths";
 import CourseCard from "../../components/CourseCard";
 import CounsellingPopup from "../../components/CounsellingPopup";
@@ -17,9 +17,14 @@ export default function Home() {
   const [counsellingSignal, setCounsellingSignal] = useState(0);
   const openCounselling = () => setCounsellingSignal((n) => n + 1);
 
-  // Not logged in -> open register popup. Logged in -> straight to admission flow.
+  // The admission / learning-journey flow is for prospective students only.
+  //  - Not logged in      -> open the register popup.
+  //  - Logged-in student  -> straight into the admission flow.
+  //  - Logged-in staff    -> do nothing (don't drag admins/counsellers into
+  //    the student route, which RoleRoute would bounce back to their panel).
   const startAdmission = (course) => {
     if (!isAuthenticated) return openAuth("register");
+    if (user?.role !== ROLES.STUDENT) return;
     const q = course?.id ? `?course=${course.id}` : "";
     navigate(`${PATHS.STUDENT.ADMISSION}${q}`);
   };
@@ -51,7 +56,7 @@ export default function Home() {
               </h1>
 
               <p className="mt-5 text-lg leading-relaxed text-muted">
-                Shri Admission Gurukul helps you complete Class 10th and 12th through recognised
+                Shree Admission Gurukul helps you complete Class 10th and 12th through recognised
                 open boards — with a counsellor guiding every step, from course choice to
                 your certificate.
               </p>
