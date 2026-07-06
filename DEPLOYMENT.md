@@ -34,15 +34,9 @@ dashboard (Environment tab). Do **not** set `PORT` (Render injects it). Make sur
 - `ACCESS_TOKEN_SECRET` / `REFRESH_TOKEN_SECRET` are long random strings.
 - Cloudinary + SMTP creds are set (SMTP must be a Gmail **App Password**).
 
-> **Email on Render — use Resend, not SMTP.** Render blocks outbound SMTP ports,
-> so Gmail SMTP times out (`Mail server connection failed: Connection timeout`).
-> The backend automatically sends via the **Resend HTTPS API** when
-> `RESEND_API_KEY` is set (falling back to SMTP locally). To enable it on Render:
-> 1. Create an API key at resend.com → set `RESEND_API_KEY` in Render env.
-> 2. Set `RESEND_FROM` to a verified sender. For a quick test use
->    `onboarding@resend.dev`; for production, verify your domain in Resend and use
->    e.g. `no-reply@shreeadmissiongurukul.fillipsoftware.com`.
-> With `RESEND_API_KEY` present, the SMTP_* vars are ignored in production.
+> **Email caveat:** Render's free/hobby tier can block outbound SMTP ports.
+> If OTP emails work locally but not on Render, switch to an HTTP-API email
+> provider (Resend / SendGrid / Brevo) instead of raw SMTP.
 
 **Redeploy:** push to the connected branch, or click "Manual Deploy" in Render.
 
