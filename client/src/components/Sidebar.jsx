@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { navConfig, NavIcon } from "../config/navConfig";
 import { PATHS } from "../routes/paths";
 import { useAppDispatch } from "../app/hooks";
@@ -6,11 +6,13 @@ import { logoutUser } from "../features/auth/auth.slice";
 
 export default function Sidebar({ role, onNavigate }) {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const items = navConfig[role] || [];
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     onNavigate?.();
-    dispatch(logoutUser());
+    await dispatch(logoutUser());
+    navigate(PATHS.HOME);
   };
 
   return (

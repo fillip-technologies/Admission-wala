@@ -15,6 +15,7 @@ import { heroBadges, learningSteps } from "../../data/home";
 import TestimonialsMarquee from "../../components/TestimonialsMarquee";
 import FaqAccordion from "../../components/FaqAccordion";
 import PromoCarousel from "../../components/PromoCarousel";
+import HeroCoursesMarquee from "../../components/HeroCoursesMarquee";
 import heroStudent from "../../assets/hero-student.png";
 
 // Hover colour cycled across the learning-journey cards. Literal strings for JIT.
@@ -51,15 +52,16 @@ export default function Home() {
       {/* ---------- HERO ---------- */}
       <section className="relative overflow-hidden">
         <div aria-hidden className="pointer-events-none absolute -top-24 right-0 h-96 w-96 rounded-full bg-saffron/15 blur-3xl" />
+
+        {/* full-width moving strip of admission programs — dynamic from the admin panel */}
+        <div className="relative pt-2 pb-3">
+          <HeroCoursesMarquee />
+        </div>
+
         <div className="relative mx-auto max-w-6xl px-4 pb-8 sm:px-6 sm:pb-10 lg:pb-12">
           <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
             <div className="max-w-xl">
-              <span className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-3 py-1 text-xs font-semibold text-ink">
-                <span className="h-1.5 w-1.5 rounded-full bg-saffron" />
-                NIOS · BBOSE · BOSSE admissions open
-              </span>
-
-              <h1 className="mt-5 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-ink sm:text-5xl xl:text-6xl">
+              <h1 className="mt-1 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-ink sm:text-5xl xl:text-6xl">
                 The open door to{" "}
                 <span className="relative whitespace-nowrap text-saffron-600">
                   finishing school
@@ -69,10 +71,9 @@ export default function Home() {
                 </span>.
               </h1>
 
-              <p className="mt-5 text-lg leading-relaxed text-muted">
-                Shree Admission Gurukul helps you complete Class 10th, 11th and 12th through recognised
-                open boards — with a counsellor guiding every step, from course choice to
-                your certificate.
+              <p className="mt-5 text-base leading-relaxed text-muted">
+                Shree Admission Gurukul guides you to the right course and college with an
+                expert counsellor at every step.
               </p>
 
               {/* trust badges */}

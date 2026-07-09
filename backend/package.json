@@ -8,6 +8,7 @@
   },
   "scripts": {
     "seedAdmin": "node src/seed/seedAdmin.js",
+    "seedPrograms": "node src/seed/seedPrograms.js",
     "dev": "nodemon src/server.js",
     "start": "node src/server.js"
   },

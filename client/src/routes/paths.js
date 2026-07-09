@@ -22,6 +22,7 @@ export const PATHS = {
     COUNSELLERS: "/admin/counsellers",
     ANNOUNCEMENTS: "/admin/announcements",
     PROMOS: "/admin/promos",
+    PROGRAMS: "/admin/programs",
     REPORTS: "/admin/reports",
   },
 

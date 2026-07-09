@@ -16,6 +16,7 @@ export const navConfig = {
     { to: PATHS.ADMIN.COUNSELLERS,  label: "Counsellers",           icon: "counsellers" },
     { to: PATHS.ADMIN.ANNOUNCEMENTS, label: "Announcements",        icon: "bell"        },
     { to: PATHS.ADMIN.PROMOS,       label: "Promo Banner",          icon: "megaphone"   },
+    { to: PATHS.ADMIN.PROGRAMS,     label: "Hero Programs",         icon: "tag"         },
     { to: PATHS.ADMIN.REPORTS,      label: "Reports",               icon: "chart"       },
   ],
   [ROLES.COUNSELLER]: [
@@ -35,6 +36,7 @@ export const NavIcon = ({ name, className = "h-4 w-4" }) => {
     chart:       "M3 3v18h18M7 15l3-4 3 3 4-6",
     bell:        "M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0",
     megaphone:   "M3 11v2a1 1 0 0 0 1 1h2l4 4V6L6 10H4a1 1 0 0 0-1 1zM14 8a4 4 0 0 1 0 8",
+    tag:         "M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 7h.01",
   };
   return (
     <svg

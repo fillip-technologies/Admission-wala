@@ -10,6 +10,7 @@ import { counsellingRouter } from "./modules/counseller/routes/counselling.route
 import { ticketRouter } from "./modules/ticket/routes/ticket.route.js";
 import { announcementRouter } from "./modules/announcement/routes/announcement.route.js";
 import { promoRouter } from "./modules/promo/routes/promo.route.js";
+import { programRouter } from "./modules/program/routes/program.route.js";
 import { errorHandler } from "./common/middlewares/errorHandler.js";
 
 const app = express();
@@ -58,6 +59,7 @@ app.use('/api/v1/counselling', counsellingRouter);
 app.use('/api/v1/tickets', ticketRouter);
 app.use('/api/v1/announcements', announcementRouter);
 app.use('/api/v1/promos', promoRouter);
+app.use('/api/v1/programs', programRouter);
 
 app.use(errorHandler);
 
