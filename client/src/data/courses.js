@@ -69,7 +69,7 @@ export const counsellingPrograms = [
 ];
 
 export const trustStats = [
-  { value: "3", label: "Recognised boards" },
-  { value: "6+", label: "Courses to choose from" },
-  { value: "1:1", label: "Career counselling" },
+  { value: "All", label: "Students & courses" },
+  { value: "10–12", label: "Live classes" },
+  { value: "Free", label: "1:1 counselling" },
 ];

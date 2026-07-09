@@ -4,25 +4,30 @@ import { programApi } from "../features/program/program.api";
 
 // A single course/admission pill. If it has a link, it's clickable — a section
 // anchor ("/#courses") uses a plain <a>, a route ("/signup") uses the router.
+// Show the program without a trailing "Admission" — the strip reads cleaner as
+// "JEE", "NEET", "MBA" etc. The stored name (admin panel) is left untouched.
+const displayName = (name = "") => name.replace(/\s*admission\s*$/i, "").trim() || name;
+
 function Pill({ program }) {
   const base =
     "inline-flex flex-none items-center gap-2 rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-ink shadow-sm";
   const dot = <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-saffron" />;
   const href = program.href;
+  const name = displayName(program.name);
 
   if (!href) {
     return (
       <span className={base}>
         {dot}
-        {program.name}
+        {name}
       </span>
     );
   }
   const cls = `${base} transition hover:border-saffron hover:bg-saffron/10`;
   return href.startsWith("/#") ? (
-    <a href={href} className={cls}>{dot}{program.name}</a>
+    <a href={href} className={cls}>{dot}{name}</a>
   ) : (
-    <Link to={href} className={cls}>{dot}{program.name}</Link>
+    <Link to={href} className={cls}>{dot}{name}</Link>
   );
 }
 

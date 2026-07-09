@@ -16,6 +16,7 @@ import TestimonialsMarquee from "../../components/TestimonialsMarquee";
 import FaqAccordion from "../../components/FaqAccordion";
 import PromoCarousel from "../../components/PromoCarousel";
 import HeroCoursesMarquee from "../../components/HeroCoursesMarquee";
+import AiImage from "../../components/AiImage";
 import heroStudent from "../../assets/hero-student.png";
 
 // Hover colour cycled across the learning-journey cards. Literal strings for JIT.
@@ -72,8 +73,8 @@ export default function Home() {
               </h1>
 
               <p className="mt-5 text-base leading-relaxed text-muted">
-                Shree Admission Gurukul guides you to the right course and college with an
-                expert counsellor at every step.
+                Class 10, 11 &amp; 12 admissions and live classes plus free counselling
+                for college, UG, PG and study abroad.
               </p>
 
               {/* trust badges */}
@@ -161,7 +162,7 @@ export default function Home() {
               advice and end-to-end admission guidance so you can make informed decisions with confidence.
             </p>
             <p className="mt-3 max-w-3xl text-sm leading-relaxed text-indigo-100/70">
-              Whether you plan to study in India or abroad, we assist you at every step — from career
+              Whether you plan to study in India or abroad, we assist you at every step, from career
               counselling and course selection to college shortlisting, application support,
               documentation, and admission assistance.
             </p>
@@ -182,7 +183,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Direct open-board admissions CTA — temporarily hidden */}
+        {/* Direct open-board admissions CTA — temporarily hidden
         {false && (
           <div className="mt-10 rounded-2xl border border-line bg-canvas p-5 sm:p-6">
             <h3 className="font-display text-lg font-bold text-ink">Ready to enrol? We take direct admissions for open boards</h3>
@@ -201,7 +202,7 @@ export default function Home() {
               ))}
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Guidance for other programs — temporarily hidden */}
         {false && (
@@ -234,6 +235,39 @@ export default function Home() {
           {courses.map((c, i) => (
             <CourseCard key={c.id} course={c} onApply={startAdmission} index={i} />
           ))}
+        </div>
+      </section>
+
+      {/* ---------- LIVE CLASSES / COACHING ---------- */}
+      <section id="classes" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+        <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
+          <div className="order-1">
+            <AiImage
+              src="/img/live-classes.jpg"
+              alt="Smiling student with a backpack and books"
+              label="Add: /public/img/live-classes.jpg"
+              className="aspect-[4/3] w-full rounded-3xl object-top shadow-xl shadow-ink/10"
+            />
+          </div>
+          <div className="order-2">
+            <span className="text-sm font-semibold uppercase tracking-wide text-saffron-600">Live classes</span>
+            <h2 className="mt-2 font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+              Coaching for Class 10, 11 &amp; 12
+            </h2>
+            <div className="mt-6 flex flex-wrap gap-2">
+              {["Science", "Commerce", "Arts", "Live + recorded", "Doubt-solving", "Mock tests"].map((t) => (
+                <span key={t} className="rounded-full border border-line bg-white px-3.5 py-1.5 text-sm font-semibold text-ink">
+                  {t}
+                </span>
+              ))}
+            </div>
+            <button
+              onClick={() => startAdmission(null)}
+              className="mt-7 rounded-xl bg-ink px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-ink-soft"
+            >
+              Join a live class
+            </button>
+          </div>
         </div>
       </section>
 
