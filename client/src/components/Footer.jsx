@@ -1,3 +1,5 @@
+import Logo from "./Logo";
+
 const quickLinks = [
   { label: "Home", href: "/" },
   { label: "Boards", href: "/#boards" },
@@ -19,10 +21,8 @@ export default function Footer() {
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-4 py-12 sm:grid-cols-2 sm:px-6 lg:grid-cols-3">
         {/* Brand */}
         <div>
-          <p className="font-display text-lg font-bold text-white">
-            Shree Admission <span className="text-saffron">Gurukul</span>
-          </p>
-          <p className="mt-2 text-sm">
+          <Logo className="h-16 w-auto rounded-xl bg-white p-1.5" />
+          <p className="mt-3 text-sm">
             A unit of{" "}
             <a href="https://www.tribacblue.com/" className="text-saffron hover:text-saffron-600">
               Tribac Blue Classes.

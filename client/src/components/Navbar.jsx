@@ -6,6 +6,7 @@ import { roleHome } from "../config/roles";
 import { PATHS } from "../routes/paths";
 import { useAuthModal } from "./auth/AuthModalProvider";
 import NotificationDrawer from "./NotificationDrawer";
+import Logo from "./Logo";
 
 export default function Navbar() {
   const dispatch = useAppDispatch();
@@ -30,13 +31,8 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-line/80 bg-canvas/80 backdrop-blur">
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link to={PATHS.HOME} onClick={close} className="flex items-center gap-2">
-          <span className="grid h-8 w-8 flex-none place-items-center rounded-lg bg-ink text-sm font-bold text-saffron">
-            SAG
-          </span>
-          <span className="font-display text-base font-bold tracking-tight text-ink sm:text-lg">
-            Shree Admission <span className="text-saffron">Gurukul</span>
-          </span>
+        <Link to={PATHS.HOME} onClick={close} className="flex items-center">
+          <Logo className="h-10 w-auto sm:h-11" />
         </Link>
 
         {/* desktop links */}

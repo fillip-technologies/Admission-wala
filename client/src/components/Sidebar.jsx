@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { navConfig, NavIcon } from "../config/navConfig";
+import Logo from "./Logo";
 import { PATHS } from "../routes/paths";
 import { useAppDispatch } from "../app/hooks";
 import { logoutUser } from "../features/auth/auth.slice";
@@ -17,13 +18,8 @@ export default function Sidebar({ role, onNavigate }) {
 
   return (
     <div className="flex h-full flex-col">
-      <NavLink to={PATHS.HOME} className="flex items-center gap-2 px-5 py-5">
-        <span className="grid h-8 w-8 place-items-center rounded-lg bg-ink text-sm font-bold text-saffron">
-          SAG
-        </span>
-        <span className="font-display text-lg font-bold tracking-tight text-ink">
-          Shree Admission <span className="text-saffron">Gurukul</span>
-        </span>
+      <NavLink to={PATHS.HOME} className="flex items-center px-5 py-4">
+        <Logo className="h-14 w-auto" />
       </NavLink>
 
       <nav className="flex-1 space-y-1 px-3 py-2">

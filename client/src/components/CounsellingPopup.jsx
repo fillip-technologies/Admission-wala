@@ -2,17 +2,14 @@ import { useEffect, useState } from "react";
 import { useAppSelector } from "../app/hooks";
 import { selectAuth } from "../features/auth/auth.slice";
 import { enquiryApi } from "../features/enquiry/enquiry.api";
-import { admissionPrograms } from "../data/courses";
+import { enquiryCourses } from "../data/courses";
 import { useAuthModal } from "./auth/AuthModalProvider";
-
-const STORAGE_KEY = "sag_counselling_popup_seen";
 
 const empty = {
   name: "",
   email: "",
   mobile_number: "",
-  program: admissionPrograms[0],
-  enquiryType: "NIOS",
+  courseIndex: 0, // index into enquiryCourses
   classType: "10th",
   description: "",
 };
@@ -26,12 +23,12 @@ export default function CounsellingPopup({ openSignal = 0 }) {
   const [error, setError] = useState("");
   const [done, setDone] = useState(false);
 
-  // Show once per visitor (first load only).
+  const course = enquiryCourses[form.courseIndex] ?? enquiryCourses[0];
+
+  // Show on every visit to the home page — for all visitors, logged in or not.
   useEffect(() => {
-    if (!localStorage.getItem(STORAGE_KEY)) {
-      const t = setTimeout(() => setOpen(true), 1200);
-      return () => clearTimeout(t);
-    }
+    const t = setTimeout(() => setOpen(true), 1200);
+    return () => clearTimeout(t);
   }, []);
 
   // Open on demand (e.g. hero "Book free counselling" button). We reset the
@@ -54,10 +51,7 @@ export default function CounsellingPopup({ openSignal = 0 }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
-  const close = () => {
-    localStorage.setItem(STORAGE_KEY, "1");
-    setOpen(false);
-  };
+  const close = () => setOpen(false);
 
   const handleChange = (e) =>
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
@@ -71,10 +65,32 @@ export default function CounsellingPopup({ openSignal = 0 }) {
       return;
     }
 
+    const payload = {
+      name: form.name.trim(),
+      email: form.email.trim(),
+      mobile_number: form.mobile_number.trim(),
+      program: course.program,
+      enquiryType: course.board,
+      description: form.description,
+      // Class only matters for open-school (10th/12th) admissions.
+      ...(course.isSchool ? { classType: form.classType } : {}),
+    };
+
     setLoading(true);
     try {
-      await enquiryApi.sendEnquiry(form);
-      localStorage.setItem(STORAGE_KEY, "1");
+      await enquiryApi.sendEnquiry(payload);
+
+      // Guests continue straight to registration with their details already
+      // filled in; logged-in users just see the thank-you confirmation.
+      if (!isAuthenticated) {
+        setOpen(false);
+        openAuth("register", {
+          name: payload.name,
+          email: payload.email,
+          mobile_number: payload.mobile_number,
+        });
+        return;
+      }
       setDone(true);
     } catch (err) {
       setError(
@@ -109,12 +125,13 @@ export default function CounsellingPopup({ openSignal = 0 }) {
 
         {/* Header */}
         <div className="bg-ink px-6 pb-6 pt-7">
-          <span className="text-sm font-semibold text-saffron">Free career counselling</span>
+          <span className="text-sm font-semibold text-saffron">Admission enquiry</span>
           <h2 className="mt-1 font-display text-2xl font-bold text-white">
-            Book your free session
+            Which course are you looking for?
           </h2>
           <p className="mt-1 text-sm text-indigo-100/80">
-            Leave your details and a counsellor will call you back to plan your admission.
+            NIOS, BOSSE, BBOSE, Engineering, Medical and many more — tell us your
+            details and we'll take you straight to registration.
           </p>
         </div>
 
@@ -190,25 +207,18 @@ export default function CounsellingPopup({ openSignal = 0 }) {
               inputMode="numeric"
             />
 
-            <Select label="Admission program" name="program" value={form.program} onChange={handleChange}>
-              {admissionPrograms.map((p) => (
-                <option key={p} value={p}>{p}</option>
+            <Select label="Course / admission" name="courseIndex" value={form.courseIndex} onChange={handleChange}>
+              {enquiryCourses.map((c, i) => (
+                <option key={c.label} value={i}>{c.label}</option>
               ))}
             </Select>
 
-            <div className="grid grid-cols-2 gap-3">
-              <Select label="Board" name="enquiryType" value={form.enquiryType} onChange={handleChange}>
-                <option value="NIOS">NIOS</option>
-                <option value="BBOSE">BBOSE</option>
-                <option value="BOSSE">BOSSE</option>
-                <option value="Other">Other</option>
-              </Select>
+            {course.isSchool && (
               <Select label="Class" name="classType" value={form.classType} onChange={handleChange}>
                 <option value="10th">Class 10th</option>
-                <option value="11th">Class 11th</option>
                 <option value="12th">Class 12th</option>
               </Select>
-            </div>
+            )}
 
             <Field
               label="Message (optional)"
@@ -229,7 +239,7 @@ export default function CounsellingPopup({ openSignal = 0 }) {
               disabled={loading}
               className="w-full rounded-xl bg-saffron py-3 text-sm font-bold text-ink transition hover:bg-saffron-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {loading ? "Submitting…" : "Request free counselling"}
+              {loading ? "Submitting…" : "Submit enquiry & continue"}
             </button>
 
             <button

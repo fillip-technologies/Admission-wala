@@ -1,5 +1,4 @@
-// Floating WhatsApp button. The number is read from VITE_WHATSAPP_NUMBER
-// (international format, digits only — e.g. 918409835444). Change it in .env.
+
 const number = import.meta.env.VITE_WHATSAPP_NUMBER;
 
 export default function WhatsAppButton() {

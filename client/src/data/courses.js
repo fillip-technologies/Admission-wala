@@ -36,6 +36,27 @@ export const admissionPrograms = [
   "BOSSE Admission",
 ];
 
+// Courses a visitor can enquire about from the on-load popup, listed in
+// priority order (open-school boards first, then higher-education verticals,
+// then "and many more"). Each `program`/`board` maps to the values the enquiry
+// backend validates against (see backend .../admissionPrograms.js + the
+// enquiryType enum). `isSchool` decides whether to ask for the class (10th/12th).
+export const enquiryCourses = [
+  { label: "NIOS — Open School (10th / 12th)", program: "NIOS Admission", board: "NIOS", isSchool: true },
+  { label: "BOSSE — Open School (10th / 12th)", program: "School Admission", board: "BOSSE", isSchool: true },
+  { label: "BBOSE — Open School (10th / 12th)", program: "School Admission", board: "BBOSE", isSchool: true },
+  { label: "Engineering (JEE / B.Tech)", program: "Engineering Admission", board: "Other" },
+  { label: "Medical (NEET / MBBS)", program: "Medical Admission", board: "Other" },
+  { label: "Diploma", program: "Diploma Admission", board: "Other" },
+  { label: "Graduation (UG)", program: "UG Admission", board: "Other" },
+  { label: "Post Graduation (PG)", program: "PG Admission", board: "Other" },
+  { label: "MBA", program: "MBA Admission", board: "Other" },
+  { label: "Law", program: "Law Admission", board: "Other" },
+  { label: "Nursing", program: "Nursing Admission", board: "Other" },
+  { label: "Pharmacy", program: "Pharmacy Admission", board: "Other" },
+  { label: "Study Abroad", program: "Study Abroad Admission", board: "Other" },
+];
+
 // What our counsellors help students with, end to end.
 export const expertise = [
   "Personalized Career Counselling",
@@ -45,27 +66,6 @@ export const expertise = [
   "Scholarship & Financial Aid Assistance",
   "Study in India & Abroad",
   "Visa Guidance (for international admissions)",
-];
-
-// Everything else: we don't process the admission ourselves, we only guide the
-// student. Clicking these opens the counselling popup instead.
-export const counsellingPrograms = [
-  "School Admission",
-  "Diploma Admission",
-  "UG Admission",
-  "PG Admission",
-  "Engineering Admission",
-  "Medical Admission",
-  "MBA Admission",
-  "Law Admission",
-  "Nursing Admission",
-  "Pharmacy Admission",
-  "Agriculture Admission",
-  "Hotel Management Admission",
-  "Aviation Admission",
-  "Design Admission",
-  "Study Abroad Admission",
-  "PhD Admission",
 ];
 
 export const trustStats = [

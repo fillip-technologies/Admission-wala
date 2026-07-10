@@ -21,13 +21,15 @@ const emptyRegister = { name: "", email: "", mobile_number: "", password: "" };
 
 // A single modal that walks through the whole auth flow without leaving the page:
 //   login ⇄ register → verify (OTP) → login ,  and  login → forgot → login
-export default function AuthModal({ view, setView, onClose }) {
+export default function AuthModal({ view, setView, onClose, prefill = null }) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { loading } = useAppSelector(selectAuth);
 
   const [login, setLogin] = useState(emptyLogin);
-  const [register, setRegister] = useState(emptyRegister);
+  // Seed the register form from `prefill` (e.g. name/email/mobile carried over
+  // from an enquiry) so the visitor doesn't retype details they just gave us.
+  const [register, setRegister] = useState(() => ({ ...emptyRegister, ...(prefill || {}) }));
   const [otp, setOtp] = useState("");
   const [email, setEmail] = useState(""); // carried between steps
   const [newPassword, setNewPassword] = useState("");

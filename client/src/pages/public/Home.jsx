@@ -8,7 +8,7 @@ import CourseCard from "../../components/CourseCard";
 import CounsellingPopup from "../../components/CounsellingPopup";
 import AnnouncementsSection from "../../components/AnnouncementsSection";
 import { useAuthModal } from "../../components/auth/AuthModalProvider";
-import { boards, courses, trustStats, admissionPrograms, counsellingPrograms, expertise } from "../../data/courses";
+import { boards, courses, trustStats, expertise } from "../../data/courses";
 import { testimonials } from "../../data/testimonials";
 import { faqs } from "../../data/faqs";
 import { heroBadges, learningSteps } from "../../data/home";
@@ -18,6 +18,39 @@ import PromoCarousel from "../../components/PromoCarousel";
 import HeroCoursesMarquee from "../../components/HeroCoursesMarquee";
 import AiImage from "../../components/AiImage";
 import heroStudent from "../../assets/hero-student.png";
+
+// Gradient per board card (NIOS / BBOSE / BOSSE). Literal strings for Tailwind JIT.
+const boardGradients = [
+  "from-saffron-600 to-ink",
+  "from-indigo-deep to-ink",
+  "from-teal-deep to-ink",
+];
+
+// The three recognised admission paths shown as banners in the Boards section.
+// Gradient classes are literal strings so Tailwind's JIT keeps them.
+const pathBanners = [
+  {
+    title: "Engineering",
+    tag: "For future engineers",
+    icon: "⚙️",
+    blurb: "JEE-aligned streams, diploma and B.Tech pathways with counselling on the right college.",
+    gradient: "from-indigo-deep to-ink",
+  },
+  {
+    title: "Medical",
+    tag: "For future doctors",
+    icon: "🩺",
+    blurb: "NEET-focused science stream, allied-health and nursing options mapped to your goal.",
+    gradient: "from-teal-deep to-ink",
+  },
+  {
+    title: "Schools",
+    tag: "Class 10 & 12 boarding",
+    icon: "🎓",
+    blurb: "Open-school admission for Class 10 and 12 with recognised boards and full documentation.",
+    gradient: "from-saffron-600 to-ink",
+  },
+];
 
 // Hover colour cycled across the learning-journey cards. Literal strings for JIT.
 const journeyHovers = [
@@ -73,8 +106,8 @@ export default function Home() {
               </h1>
 
               <p className="mt-5 text-base leading-relaxed text-muted">
-                Class 10, 11 &amp; 12 admissions and live classes plus free counselling
-                for college, UG, PG and study abroad.
+                Admissions, expert counselling and classes guiding every student
+                to the right course, college and career.
               </p>
 
               {/* trust badges */}
@@ -128,17 +161,46 @@ export default function Home() {
       <section id="boards" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
         <SectionHead eyebrow="Choose your board" title="Three recognised paths, one simple admission"
           sub="Not sure which board fits you? Our counsellors recommend the right one based on your goal and timeline." />
+
+        {/* Recognised boards — NIOS / BBOSE / BOSSE */}
         <div className="mt-9 grid gap-5 md:grid-cols-3">
-          {boards.map((b) => (
-            <div key={b.code} className="relative flex flex-col rounded-2xl border border-line bg-white p-6">
-              <div className="absolute left-0 top-6 h-10 w-1 rounded-r bg-saffron" />
-              <div className="flex items-center justify-between">
-                <span className="font-display text-2xl font-extrabold text-ink">{b.code}</span>
-                <span className="rounded-full bg-ink/5 px-2.5 py-1 text-[11px] font-semibold text-ink">{b.tag}</span>
+          {boards.map((b, i) => (
+            <div
+              key={b.code}
+              className={`relative flex flex-col overflow-hidden rounded-2xl bg-gradient-to-br ${boardGradients[i % boardGradients.length]} p-6 text-white shadow-lg ring-1 ring-white/10`}
+            >
+              <span aria-hidden className="pointer-events-none absolute -right-6 -top-6 h-28 w-28 rounded-full bg-white/10 blur-2xl" />
+              <div className="relative flex items-center justify-between">
+                <span className="font-display text-2xl font-extrabold">{b.code}</span>
+                <span className="rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-semibold text-white">{b.tag}</span>
               </div>
-              <p className="mt-1 text-sm font-semibold text-ink/70">{b.name}</p>
-              <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">{b.blurb}</p>
+              <p className="relative mt-1 text-sm font-semibold text-white/80">{b.name}</p>
+              <p className="relative mt-3 flex-1 text-sm leading-relaxed text-white/85">{b.blurb}</p>
             </div>
+          ))}
+        </div>
+
+        {/* Three recognised paths — Engineering / Medical / Schools banners */}
+        <div className="mt-5 grid gap-5 md:grid-cols-3">
+          {pathBanners.map((p) => (
+            <button
+              key={p.title}
+              type="button"
+              onClick={openCounselling}
+              className={`group relative flex min-h-[168px] flex-col justify-end overflow-hidden rounded-2xl bg-gradient-to-br ${p.gradient} p-6 text-left text-white shadow-lg ring-1 ring-white/10 transition hover:-translate-y-0.5 hover:shadow-xl`}
+            >
+              <span aria-hidden className="pointer-events-none absolute -right-6 -top-6 h-28 w-28 rounded-full bg-white/10 blur-2xl" />
+              <span aria-hidden className="absolute right-5 top-5 text-4xl">{p.icon}</span>
+              <span className="relative text-[11px] font-bold uppercase tracking-wide text-white/80">{p.tag}</span>
+              <span className="relative mt-1 font-display text-2xl font-extrabold">{p.title}</span>
+              <span className="relative mt-1.5 text-sm leading-relaxed text-white/85">{p.blurb}</span>
+              <span className="relative mt-3 inline-flex items-center gap-1.5 text-sm font-semibold">
+                Explore
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition group-hover:translate-x-1">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </span>
+            </button>
           ))}
         </div>
       </section>
@@ -183,48 +245,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Direct open-board admissions CTA — temporarily hidden
-        {false && (
-          <div className="mt-10 rounded-2xl border border-line bg-canvas p-5 sm:p-6">
-            <h3 className="font-display text-lg font-bold text-ink">Ready to enrol? We take direct admissions for open boards</h3>
-            <p className="mt-1 text-sm text-muted">
-              NIOS · BBOSE · BOSSE — for Class 10th, 11th &amp; 12th. Pick one to start your admission.
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2.5">
-              {admissionPrograms.map((p) => (
-                <button
-                  key={p}
-                  onClick={() => startAdmission(null)}
-                  className="rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-ink transition hover:border-saffron hover:bg-saffron/10"
-                >
-                  {p}
-                </button>
-              ))}
-            </div>
-          </div>
-        )} */}
-
-        {/* Guidance for other programs — temporarily hidden */}
-        {false && (
-          <div className="mt-6">
-            <h3 className="font-display text-lg font-bold text-ink">Exploring other paths? We'll guide you</h3>
-            <p className="mt-1 text-sm text-muted">
-              From school and open boards to UG, PG, professional courses and study abroad — talk to a
-              counsellor and we'll help you choose and apply the right way.
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2.5">
-              {counsellingPrograms.map((p) => (
-                <button
-                  key={p}
-                  onClick={openCounselling}
-                  className="rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-muted transition hover:border-ink/30 hover:text-ink"
-                >
-                  {p}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </section>
 
       {/* ---------- COURSES ---------- */}

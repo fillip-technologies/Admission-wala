@@ -12,13 +12,13 @@ const requireAdmin = async (userId) => {
   return user;
 };
 
-// Public: active programs, ordered.
+
 export const getActivePrograms = asyncHandler(async (req, res) => {
   const programs = await Program.find({ active: true }).sort({ order: 1, createdAt: 1 });
   res.status(STATUS_CODES.OK).json(new ApiResponse(STATUS_CODES.OK, "", programs));
 });
 
-// Admin: all programs for management.
+
 export const getAllPrograms = asyncHandler(async (req, res) => {
   await requireAdmin(req.user);
   const programs = await Program.find().sort({ order: 1, createdAt: 1 });
