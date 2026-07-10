@@ -33,21 +33,21 @@ const pathBanners = [
     title: "Engineering",
     tag: "For future engineers",
     icon: "⚙️",
-    blurb: "JEE-aligned streams, diploma and B.Tech pathways with counselling on the right college.",
+    blurb: "JEE-aligned streams plus diploma and B.Tech pathways — with counselling to pick the right college.",
     gradient: "from-indigo-deep to-ink",
   },
   {
     title: "Medical",
     tag: "For future doctors",
     icon: "🩺",
-    blurb: "NEET-focused science stream, allied-health and nursing options mapped to your goal.",
+    blurb: "NEET-focused science stream with allied-health and nursing options mapped to your goal.",
     gradient: "from-teal-deep to-ink",
   },
   {
     title: "Schools",
-    tag: "Class 10 & 12 boarding",
+    tag: "Class 10 & 12",
     icon: "🎓",
-    blurb: "Open-school admission for Class 10 and 12 with recognised boards and full documentation.",
+    blurb: "Open-school admission for Class 10 and 12 on recognised boards, with full documentation support.",
     gradient: "from-saffron-600 to-ink",
   },
 ];
@@ -102,7 +102,7 @@ export default function Home() {
                   <svg aria-hidden viewBox="0 0 300 12" className="absolute -bottom-1 left-0 w-full text-saffron" preserveAspectRatio="none">
                     <path d="M2 9 C 80 2, 220 2, 298 8" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
                   </svg>
-                </span>.
+                </span>
               </h1>
 
               <p className="mt-5 text-base leading-relaxed text-muted">
@@ -134,11 +134,15 @@ export default function Home() {
                 </button>
               </div>
 
-              <dl className="mt-12 flex max-w-md gap-8">
+              <dl className="mt-10 grid max-w-lg grid-cols-3 gap-3">
                 {trustStats.map((s) => (
-                  <div key={s.label}>
-                    <dt className="font-display text-3xl font-bold text-ink">{s.value}</dt>
-                    <dd className="mt-1 text-sm text-muted">{s.label}</dd>
+                  <div
+                    key={s.label}
+                    className="rounded-2xl border border-line bg-white/70 p-4 text-center shadow-sm backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-saffron/40 hover:shadow-md"
+                  >
+                    <dt className="font-display text-2xl font-extrabold leading-none text-saffron-600">{s.value}</dt>
+                    <dd className="mt-2 text-sm font-bold text-ink">{s.label}</dd>
+                    <dd className="mt-0.5 text-xs leading-snug text-muted">{s.sub}</dd>
                   </div>
                 ))}
               </dl>
@@ -159,8 +163,8 @@ export default function Home() {
 
       {/* ---------- BOARDS ---------- */}
       <section id="boards" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-        <SectionHead eyebrow="Choose your board" title="Three recognised paths, one simple admission"
-          sub="Not sure which board fits you? Our counsellors recommend the right one based on your goal and timeline." />
+        <SectionHead eyebrow="Boards & pathways" title="Recognised boards, a clear path to every goal"
+          />
 
         {/* Recognised boards — NIOS / BBOSE / BOSSE */}
         <div className="mt-9 grid gap-5 md:grid-cols-3">
@@ -217,7 +221,7 @@ export default function Home() {
               Our Expertise
             </span>
             <h2 className="mt-4 max-w-3xl font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Personalized Career Advice &amp; <span className="text-saffron">Admission Guidance</span>
+              Personal guidance at every step, <span className="text-saffron">from counselling to admission</span>
             </h2>
             <p className="mt-3 max-w-3xl text-base leading-relaxed text-indigo-100/85">
               Every student's journey is unique. Our experienced counsellors provide personalized career

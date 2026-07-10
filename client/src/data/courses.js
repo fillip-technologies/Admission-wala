@@ -1,10 +1,10 @@
 export const boards = [
   { code: "NIOS", name: "National Institute of Open Schooling", tag: "Most chosen",
-    blurb: "India's largest open school, recognised nationwide. Flexible exams and on-demand options for Secondary and Senior Secondary." },
-  { code: "BBOSE", name: "Bihar Board of Open Schooling & Examination", tag: "Bihar",
-    blurb: "State open board for Bihar learners. A practical route to complete Class 10th, 11th and 12th at your own pace." },
+    blurb: "India's largest open school, recognised nationwide. Flexible exams and on-demand options for Class 10 and 12." },
+  { code: "BBOSE", name: "Bihar Board of Open Schooling & Examination", tag: "Bihar board",
+    blurb: "Bihar's state open board — a practical, self-paced route to complete Class 10, 11 or 12." },
   { code: "BOSSE", name: "Board of Open Schooling & Skill Education", tag: "Skill-focused",
-    blurb: "Sikkim's open board with a strong focus on skill-linked certification alongside academics." },
+    blurb: "Sikkim's open board, pairing recognised academics with strong skill-linked certification." },
 ];
 
 export const courses = [
@@ -68,8 +68,10 @@ export const expertise = [
   "Visa Guidance (for international admissions)",
 ];
 
+// Three punchy value props shown as a strip under the hero heading. `value` is
+// the highlighted lead-in, `label` the headline, `sub` a one-line supporting note.
 export const trustStats = [
-  { value: "All", label: "Students & courses" },
-  { value: "10–12", label: "Live classes" },
-  { value: "Free", label: "1:1 counselling" },
+  { value: "Free", label: "1:1 Counselling", sub: "No-cost expert guidance" },
+  { value: "10–12", label: "Live Classes", sub: "Science, Commerce & Arts" },
+  { value: "All", label: "Courses & Boards", sub: "NIOS, BBOSE & BOSSE" },
 ];

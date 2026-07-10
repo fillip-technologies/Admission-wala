@@ -21,7 +21,17 @@ export default function Footer() {
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-4 py-12 sm:grid-cols-2 sm:px-6 lg:grid-cols-3">
         {/* Brand */}
         <div>
-          <Logo className="h-16 w-auto rounded-xl bg-white p-1.5" />
+          <div className="flex items-center gap-3">
+            <Logo className="h-16 w-auto rounded-xl bg-white p-1.5" />
+            <span className="flex flex-col leading-tight">
+              <span className="text-lg font-bold tracking-tight text-white">
+                Shree Admission Gurukul
+              </span>
+              <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-saffron">
+                Your Trusted Admission Partner
+              </span>
+            </span>
+          </div>
           <p className="mt-3 text-sm">
             A unit of{" "}
             <a href="https://www.tribacblue.com/" className="text-saffron hover:text-saffron-600">

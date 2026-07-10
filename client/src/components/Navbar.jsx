@@ -31,8 +31,16 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-line/80 bg-canvas/80 backdrop-blur">
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link to={PATHS.HOME} onClick={close} className="flex items-center">
+        <Link to={PATHS.HOME} onClick={close} className="flex items-center gap-2.5">
           <Logo className="h-10 w-auto sm:h-11" />
+          <span className="hidden flex-col leading-tight sm:flex">
+            <span className="text-base font-bold tracking-tight text-[#1e3a8a]">
+              Shree Admission Gurukul
+            </span>
+            <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-[#b8860b]">
+              Your Trusted Admission Partner
+            </span>
+          </span>
         </Link>
 
         {/* desktop links */}
