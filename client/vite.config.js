@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite'
 // calls to the Render backend server-side. This keeps the auth cookie
 // first-party (localhost), avoiding third-party-cookie blocking that breaks
 // a local frontend talking directly to an onrender.com backend.
-const BACKEND = 'https://admission-wala-e8wn.onrender.com'
+const BACKEND = 'https://api.shreeadmissiongurukul.com'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],

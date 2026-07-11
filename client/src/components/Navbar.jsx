@@ -8,6 +8,12 @@ import { useAuthModal } from "./auth/AuthModalProvider";
 import NotificationDrawer from "./NotificationDrawer";
 import Logo from "./Logo";
 
+const phones = [
+  { display: "+91 82105 34132", tel: "+918210534132" },
+  { display: "+91 62993 36404", tel: "+916299336404" },
+  { display: "+91 84098 35444", tel: "+918409835444" },
+];
+
 export default function Navbar() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -30,6 +36,23 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-line/80 bg-canvas/80 backdrop-blur">
+      {/* top contact bar */}
+      <div className="bg-ink text-white">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-5 gap-y-1 px-4 py-1.5 text-[11px] font-medium sm:justify-end sm:px-6">
+          {phones.map((phone) => (
+            <a
+              key={phone.tel}
+              href={`tel:${phone.tel}`}
+              className="flex items-center gap-1 text-white/80 transition hover:text-saffron"
+            >
+              <svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor" aria-hidden="true">
+                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2a1 1 0 011.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1V20a1 1 0 01-1 1C10.29 21 3 13.71 3 4.5a1 1 0 011-1H7.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z" />
+              </svg>
+              {phone.display}
+            </a>
+          ))}
+        </div>
+      </div>
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link to={PATHS.HOME} onClick={close} className="flex items-center gap-2.5">
           <Logo className="h-10 w-auto sm:h-11" />

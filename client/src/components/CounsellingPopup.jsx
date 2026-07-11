@@ -9,7 +9,8 @@ const empty = {
   name: "",
   email: "",
   mobile_number: "",
-  courseIndex: 0, // index into enquiryCourses
+  courseIndex: 0, // index into enquiryCourses, or "other"
+  otherCourse: "", // free-text course when courseIndex === "other"
   classType: "10th",
   description: "",
 };
@@ -23,6 +24,7 @@ export default function CounsellingPopup({ openSignal = 0 }) {
   const [error, setError] = useState("");
   const [done, setDone] = useState(false);
 
+  const isOther = form.courseIndex === "other";
   const course = enquiryCourses[form.courseIndex] ?? enquiryCourses[0];
 
   // Show on every visit to the home page — for all visitors, logged in or not.
@@ -65,15 +67,25 @@ export default function CounsellingPopup({ openSignal = 0 }) {
       return;
     }
 
+    if (isOther && !form.otherCourse.trim()) {
+      setError("Please tell us which course you're looking for.");
+      return;
+    }
+
     const payload = {
       name: form.name.trim(),
       email: form.email.trim(),
       mobile_number: form.mobile_number.trim(),
-      program: course.program,
-      enquiryType: course.board,
       description: form.description,
-      // Class only matters for open-school (10th/12th) admissions.
-      ...(course.isSchool ? { classType: form.classType } : {}),
+      ...(isOther
+        ? // Free-text course: send as an "Other" board with the typed name.
+          { enquiryType: "Other", customBoard: form.otherCourse.trim() }
+        : {
+            program: course.program,
+            enquiryType: course.board,
+            // Class only matters for open-school (10th/12th) admissions.
+            ...(course.isSchool ? { classType: form.classType } : {}),
+          }),
     };
 
     setLoading(true);
@@ -211,9 +223,20 @@ export default function CounsellingPopup({ openSignal = 0 }) {
               {enquiryCourses.map((c, i) => (
                 <option key={c.label} value={i}>{c.label}</option>
               ))}
+              <option value="other">Other</option>
             </Select>
 
-            {course.isSchool && (
+            {isOther && (
+              <Field
+                label="Which course?"
+                name="otherCourse"
+                value={form.otherCourse}
+                onChange={handleChange}
+                placeholder="Type the course / board you're looking for"
+              />
+            )}
+
+            {!isOther && course.isSchool && (
               <Select label="Class" name="classType" value={form.classType} onChange={handleChange}>
                 <option value="10th">Class 10th</option>
                 <option value="12th">Class 12th</option>

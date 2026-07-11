@@ -20,6 +20,8 @@ const app = express();
 // CLIENT_URL (comma-separated). Merging avoids a CLIENT_URL value accidentally
 // dropping the production or localhost origin.
 const DEFAULT_ORIGINS = [
+  "https://shreeadmissiongurukul.com",
+  "https://www.shreeadmissiongurukul.com",
   "https://shreeadmissiongurukul.fillipsoftware.com",
   "http://localhost:5173",
 ];
