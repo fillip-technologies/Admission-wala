@@ -22,12 +22,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-/**
- * Central place to react to auth failures as the app grows.
- * NOTE: /me returning 401 for a guest is normal, so we don't hard-redirect here.
- * When you add a POST /auth/refresh route, this is where you'd queue the failed
- * request, hit refresh, and retry. Left as a clearly-marked extension point.
- */
+
 api.interceptors.response.use(
   (res) => res,
   (error) => {

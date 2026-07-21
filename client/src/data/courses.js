@@ -36,15 +36,13 @@ export const admissionPrograms = [
   "BOSSE Admission",
 ];
 
-// Courses a visitor can enquire about from the on-load popup, listed in
-// priority order (open-school boards first, then higher-education verticals,
-// then "and many more"). Each `program`/`board` maps to the values the enquiry
-// backend validates against (see backend .../admissionPrograms.js + the
-// enquiryType enum). `isSchool` decides whether to ask for the class (10th/12th).
+
 export const enquiryCourses = [
-  { label: "NIOS — Open School (10th / 12th)", program: "NIOS Admission", board: "NIOS", isSchool: true },
-  { label: "BOSSE — Open School (10th / 12th)", program: "School Admission", board: "BOSSE", isSchool: true },
-  { label: "BBOSE — Open School (10th / 12th)", program: "School Admission", board: "BBOSE", isSchool: true },
+  { label: "NIOS — Open School (10th to Phd)", program: "NIOS Admission", board: "NIOS", isSchool: true },
+  { label: "BOSSE — Open School (Pre-Nursery to 12th)", program: "BOSSE Admission", board: "BOSSE", isSchool: true },
+  { label: "BBOSE — Open School (Pre-Nursery to 12th)", program: "BBOS Admission", board: "BBOSE", isSchool: true },
+  { label: "CBSE School Admission (Pre-Nursery to 12th)", program: "CBSE Admission", board: "CBSE", isSchool: true },
+  { label: "ICSE School Admission (Pre-Nursery to 12th)", program: "ICSE Admission", board: "CBSE", isSchool: true },
   { label: "Engineering (JEE / B.Tech)", program: "Engineering Admission", board: "Other" },
   { label: "Medical (NEET / MBBS)", program: "Medical Admission", board: "Other" },
   { label: "Diploma", program: "Diploma Admission", board: "Other" },
@@ -68,10 +66,10 @@ export const expertise = [
   "Visa Guidance (for international admissions)",
 ];
 
-// Three punchy value props shown as a strip under the hero heading. `value` is
-// the highlighted lead-in, `label` the headline, `sub` a one-line supporting note.
+
 export const trustStats = [
-  { value: "Free", label: "1:1 Counselling", sub: "No-cost expert guidance" },
-  { value: "10–12", label: "Live Classes", sub: "Science, Commerce & Arts" },
-  { value: "All", label: "Courses & Boards", sub: "NIOS, BBOSE & BOSSE" },
+  // `action: "counselling"` makes this card open the counselling form on click.
+  { value: "Free", label: "1:1 Counselling", sub: "No-cost expert guidance", action: "counselling" },
+  { value: "NIOS", label: "Open schooling", sub: "All Streams" },
+  { value: "All", label: "Courses & Boards", sub: "BBOSE, BOSSE and others" },
 ];

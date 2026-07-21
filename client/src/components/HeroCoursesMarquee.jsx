@@ -59,7 +59,7 @@ export default function HeroCoursesMarquee() {
   return (
     <div>
       <p className="mb-3 px-4 text-xs font-semibold uppercase tracking-wide text-muted sm:px-6">
-        Admissions we guide you through
+        Your Trusted admission partner
       </p>
       <div className="group relative overflow-hidden py-1">
         {/* soft edge fades */}

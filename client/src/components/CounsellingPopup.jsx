@@ -9,13 +9,13 @@ const empty = {
   name: "",
   email: "",
   mobile_number: "",
-  courseIndex: 0, // index into enquiryCourses, or "other"
-  otherCourse: "", // free-text course when courseIndex === "other"
+  courseIndex: 0,
+  otherCourse: "", 
   classType: "10th",
   description: "",
 };
 
-export default function CounsellingPopup({ openSignal = 0 }) {
+export default function CounsellingPopup({ openSignal = 0, presetCourseIndex = null }) {
   const { openAuth } = useAuthModal();
   const { isAuthenticated } = useAppSelector(selectAuth);
   const [open, setOpen] = useState(false);
@@ -37,11 +37,18 @@ export default function CounsellingPopup({ openSignal = 0 }) {
   // form/success state so a re-open always starts fresh.
   useEffect(() => {
     if (openSignal > 0) {
-      setForm(empty);
+      // A valid preset index (e.g. the "Enquire about NIOS admission" button)
+      // opens the form with that course already selected; otherwise start fresh.
+      const preset =
+        typeof presetCourseIndex === "number" && enquiryCourses[presetCourseIndex]
+          ? { courseIndex: presetCourseIndex }
+          : {};
+      setForm({ ...empty, ...preset });
       setDone(false);
       setError("");
       setOpen(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openSignal]);
 
   // Close on Escape.
@@ -118,13 +125,13 @@ export default function CounsellingPopup({ openSignal = 0 }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
       role="dialog"
       aria-modal="true"
     >
       <div className="absolute inset-0 bg-ink/40 backdrop-blur-sm" onClick={close} />
 
-      <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-line bg-white shadow-2xl">
+      <div className="relative flex max-h-[90dvh] w-full max-w-md flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-2xl">
         <button
           onClick={close}
           aria-label="Close"
@@ -136,17 +143,14 @@ export default function CounsellingPopup({ openSignal = 0 }) {
         </button>
 
         {/* Header */}
-        <div className="bg-ink px-6 pb-6 pt-7">
+        <div className="shrink-0 bg-ink px-6 pb-5 pt-7">
           <span className="text-sm font-semibold text-saffron">Admission enquiry</span>
           <h2 className="mt-1 font-display text-2xl font-bold text-white">
             Which course are you looking for?
           </h2>
-          <p className="mt-1 text-sm text-indigo-100/80">
-            NIOS, BOSSE, BBOSE, Engineering, Medical and many more — tell us your
-            details and we'll take you straight to registration.
-          </p>
         </div>
 
+        <div className="flex-1 overflow-y-auto">
         {done ? (
           <div className="px-6 py-10 text-center">
             <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-teal-deep/10 text-teal-deep">
@@ -239,6 +243,7 @@ export default function CounsellingPopup({ openSignal = 0 }) {
             {!isOther && course.isSchool && (
               <Select label="Class" name="classType" value={form.classType} onChange={handleChange}>
                 <option value="10th">Class 10th</option>
+                <option value="11th">Class 11th</option>
                 <option value="12th">Class 12th</option>
               </Select>
             )}
@@ -274,6 +279,7 @@ export default function CounsellingPopup({ openSignal = 0 }) {
             </button>
           </form>
         )}
+        </div>
       </div>
     </div>
   );

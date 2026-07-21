@@ -8,7 +8,7 @@ import CourseCard from "../../components/CourseCard";
 import CounsellingPopup from "../../components/CounsellingPopup";
 import AnnouncementsSection from "../../components/AnnouncementsSection";
 import { useAuthModal } from "../../components/auth/AuthModalProvider";
-import { boards, courses, trustStats, expertise } from "../../data/courses";
+import { boards, courses, trustStats, expertise, enquiryCourses } from "../../data/courses";
 import { testimonials } from "../../data/testimonials";
 import { faqs } from "../../data/faqs";
 import { heroBadges, learningSteps } from "../../data/home";
@@ -18,6 +18,9 @@ import PromoCarousel from "../../components/PromoCarousel";
 import HeroCoursesMarquee from "../../components/HeroCoursesMarquee";
 import AiImage from "../../components/AiImage";
 import heroStudent from "../../assets/hero-student.png";
+
+// Which enquiry-course option the "Enquire about NIOS admission" button pre-selects.
+const NIOS_COURSE_INDEX = enquiryCourses.findIndex((c) => c.board === "NIOS");
 
 // Gradient per board card (NIOS / BBOSE / BOSSE). Literal strings for Tailwind JIT.
 const boardGradients = [
@@ -45,9 +48,9 @@ const pathBanners = [
   },
   {
     title: "Schools",
-    tag: "Class 10 & 12",
+    tag: "Nursery to 12th",
     icon: "🎓",
-    blurb: "Open-school admission for Class 10 and 12 on recognised boards, with full documentation support.",
+    blurb: "Admission from Nursery to Class 12th on recognised boards, with full documentation support.",
     gradient: "from-saffron-600 to-ink",
   },
 ];
@@ -64,7 +67,13 @@ export default function Home() {
   const { openAuth } = useAuthModal();
   const { isAuthenticated, user } = useAppSelector(selectAuth);
   const [counsellingSignal, setCounsellingSignal] = useState(0);
-  const openCounselling = () => setCounsellingSignal((n) => n + 1);
+  const [counsellingCourse, setCounsellingCourse] = useState(null);
+  // Optionally pre-select a course in the popup. Existing callers pass the click
+  // event (onClick={openCounselling}), so only a real number counts as a preset.
+  const openCounselling = (courseIndex) => {
+    setCounsellingCourse(typeof courseIndex === "number" ? courseIndex : null);
+    setCounsellingSignal((n) => n + 1);
+  };
 
   // The admission / learning-journey flow is for prospective students only.
   //  - Not logged in      -> open the register popup.
@@ -81,7 +90,7 @@ export default function Home() {
   return (
     <>
       {/* First-visit + on-demand counselling registration popup */}
-      <CounsellingPopup openSignal={counsellingSignal} />
+      <CounsellingPopup openSignal={counsellingSignal} presetCourseIndex={counsellingCourse} />
 
       {/* ---------- HERO ---------- */}
       <section className="relative overflow-hidden">
@@ -127,7 +136,7 @@ export default function Home() {
                   onClick={() => (isAuthenticated ? navigate(roleHome(user?.role)) : openAuth("register"))}
                   className="rounded-xl bg-ink px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-ink-soft"
                 >
-                  {isAuthenticated ? "Go to dashboard" : "Start free — Register"}
+                  {isAuthenticated ? "Go to dashboard" : "Register"}
                 </button>
                 <button onClick={openCounselling} className="rounded-xl border border-line bg-white px-6 py-3.5 text-sm font-semibold text-ink transition hover:border-ink/30">
                   Book free counselling
@@ -135,20 +144,29 @@ export default function Home() {
               </div>
 
               <dl className="mt-10 grid max-w-lg grid-cols-3 gap-3">
-                {trustStats.map((s) => (
-                  <div
-                    key={s.label}
-                    className="rounded-2xl border border-line bg-white/70 p-4 text-center shadow-sm backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-saffron/40 hover:shadow-md"
-                  >
-                    <dt className="font-display text-2xl font-extrabold leading-none text-saffron-600">{s.value}</dt>
-                    <dd className="mt-2 text-sm font-bold text-ink">{s.label}</dd>
-                    <dd className="mt-0.5 text-xs leading-snug text-muted">{s.sub}</dd>
-                  </div>
-                ))}
+                {trustStats.map((s) => {
+                  const clickable = s.action === "counselling";
+                  const Tag = clickable ? "button" : "div";
+                  return (
+                    <Tag
+                      key={s.label}
+                      {...(clickable
+                        ? { type: "button", onClick: () => openCounselling(), "aria-label": "Book free 1:1 counselling" }
+                        : {})}
+                      className={`rounded-2xl border border-line bg-white/70 p-4 text-center shadow-sm backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-saffron/40 hover:shadow-md ${
+                        clickable ? "cursor-pointer ring-saffron/0 hover:ring-2 hover:ring-saffron/30" : ""
+                      }`}
+                    >
+                      <dt className="font-display text-2xl font-extrabold leading-none text-saffron-600">{s.value}</dt>
+                      <dd className="mt-2 text-sm font-bold text-ink">{s.label}</dd>
+                      <dd className="mt-0.5 text-xs leading-snug text-muted">{s.sub}</dd>
+                    </Tag>
+                  );
+                })}
               </dl>
             </div>
 
-            <div className="relative mx-auto w-full max-w-sm lg:max-w-none">
+            <div className="relative mx-auto hidden w-full max-w-sm lg:block lg:max-w-none">
               <img src={heroStudent} alt="A student smiling while studying online on a laptop" draggable="false" className="w-full select-none" />
             </div>
           </div>
@@ -262,35 +280,161 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- LIVE CLASSES / COACHING ---------- */}
+      {/* ---------- NIOS COURSES ---------- */}
       <section id="classes" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
         <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
           <div className="order-1">
             <AiImage
               src="/img/live-classes.jpg"
-              alt="Smiling student with a backpack and books"
+              alt="Student studying with books and a laptop"
               label="Add: /public/img/live-classes.jpg"
               className="aspect-[4/3] w-full rounded-3xl object-top shadow-xl shadow-ink/10"
             />
           </div>
           <div className="order-2">
-            <span className="text-sm font-semibold uppercase tracking-wide text-saffron-600">Live classes</span>
+            <span className="text-sm font-semibold uppercase tracking-wide text-saffron-600">NIOS</span>
             <h2 className="mt-2 font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
-              Coaching for Class 10, 11 &amp; 12
+              Courses offered under NIOS
             </h2>
-            <div className="mt-6 flex flex-wrap gap-2">
-              {["Science", "Commerce", "Arts", "Live + recorded", "Doubt-solving", "Mock tests"].map((t) => (
-                <span key={t} className="rounded-full border border-line bg-white px-3.5 py-1.5 text-sm font-semibold text-ink">
-                  {t}
-                </span>
-              ))}
+            <p className="mt-4 text-sm leading-relaxed text-muted">
+              The National Institute of Open Schooling (NIOS) lets you complete your schooling
+              with flexible admission and stream choices. Here are the courses you can enrol in
+              with us:
+            </p>
+            <div className="mt-6 space-y-5">
+              <div>
+                <h3 className="font-display text-lg font-bold text-ink">Secondary Course (Class 10)</h3>
+                <p className="mt-1 text-sm text-muted">
+                  A recognised board equivalent for 10th, with a wide range of subjects to choose from.
+                </p>
+              </div>
+              <div>
+                <h3 className="font-display text-lg font-bold text-ink">Senior Secondary Course (Class 12)</h3>
+                <p className="mt-1 text-sm text-muted">
+                  Complete your 12th in your preferred stream — Science, Commerce or Arts.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {["Science", "Commerce", "Arts (Humanities)"].map((t) => (
+                    <span key={t} className="rounded-full border border-line bg-white px-3.5 py-1.5 text-sm font-semibold text-ink">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <h3 className="font-display text-lg font-bold text-ink">Vocational Courses</h3>
+                <p className="mt-1 text-sm text-muted">
+                  Skill-based certification programs to build job-ready expertise alongside academics.
+                </p>
+              </div>
             </div>
             <button
-              onClick={() => startAdmission(null)}
+              onClick={() => openCounselling(NIOS_COURSE_INDEX)}
               className="mt-7 rounded-xl bg-ink px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-ink-soft"
             >
-              Join a live class
+              Enquire about NIOS admission
             </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- OBE PROGRAMME ---------- */}
+      <section id="obe" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+        <div className="overflow-hidden rounded-3xl border border-line bg-white shadow-sm">
+          {/* Dark gradient hero band */}
+          <div className="relative overflow-hidden bg-gradient-to-br from-ink to-ink-soft p-6 sm:p-10">
+            <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-saffron/25 blur-3xl" />
+            <div aria-hidden className="pointer-events-none absolute -bottom-24 -left-10 h-56 w-56 rounded-full bg-indigo-deep/40 blur-3xl" />
+
+            <div className="relative">
+              <span className="inline-flex items-center gap-2 rounded-full bg-saffron px-3 py-1 text-xs font-bold uppercase tracking-wide text-ink">
+                <span className="h-1.5 w-1.5 rounded-full bg-ink" />
+                Open Basic Education (OBE)
+              </span>
+              <h2 className="mt-4 max-w-3xl font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                A second chance at school, <span className="text-saffron">recognised by the Government of India</span>
+              </h2>
+              <p className="mt-4 max-w-3xl text-sm leading-relaxed text-white/80">
+                Launched in June 1994 to bring primary and upper-primary education to neo-literates, OBE is
+                a three-tier equivalency programme. Since 2000 it also covers children aged 6–14, and is
+                recognised as equivalent to formal schooling for further education and employment.
+              </p>
+
+              {/* Quick facts */}
+              <div className="mt-6 flex flex-wrap gap-2.5">
+                {[
+                  { icon: "📅", text: "Since June 1994" },
+                  { icon: "🧒", text: "Ages 6–14 & adults" },
+                  { icon: "🏛️", text: "Govt. of India recognised" },
+                  { icon: "🎓", text: "Equivalent to formal school" },
+                ].map((f) => (
+                  <span key={f.text} className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/15 backdrop-blur">
+                    <span aria-hidden>{f.icon}</span>
+                    {f.text}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Body */}
+          <div className="p-6 sm:p-10">
+            <div className="flex items-start gap-3 rounded-2xl border border-teal-deep/20 bg-teal-deep/5 p-4">
+              <span aria-hidden className="text-lg">♿</span>
+              <p className="text-sm leading-relaxed text-ink">
+                <span className="font-semibold">Inclusive by design.</span> NIOS has special provisions for
+                children and adults with disabilities — full details in the prospectus.
+              </p>
+            </div>
+
+            {/* Target group */}
+            <h3 className="mt-9 font-display text-xl font-bold text-ink">Who it's for</h3>
+            <div className="mt-4 grid gap-5 sm:grid-cols-2">
+              {[
+                {
+                  icon: "🧒",
+                  title: "Children (6–14 years)",
+                  accent: "from-saffron to-saffron-600",
+                  body: "Any interested child, school dropouts, left-outs from Sarva Shiksha Abhiyan and children with special needs.",
+                },
+                {
+                  icon: "🧑",
+                  title: "Adolescents & Adults (14+ years)",
+                  accent: "from-teal-deep to-indigo-deep",
+                  body: "Any interested adult, school dropouts, neo-literates, qualified candidates of the Basic Education Literacy Assessment of NLMA, and adults with special needs.",
+                },
+              ].map((g) => (
+                <div key={g.title} className="group relative overflow-hidden rounded-2xl border border-line bg-canvas p-5 transition hover:-translate-y-0.5 hover:shadow-lg">
+                  <span aria-hidden className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${g.accent}`} />
+                  <div className="flex items-center gap-3">
+                    <span aria-hidden className="grid h-11 w-11 place-items-center rounded-xl bg-white text-2xl shadow-sm ring-1 ring-line">{g.icon}</span>
+                    <h4 className="font-display text-base font-bold text-ink">{g.title}</h4>
+                  </div>
+                  <p className="mt-3 text-sm leading-relaxed text-muted">{g.body}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Levels */}
+            <h3 className="mt-9 font-display text-xl font-bold text-ink">Three levels, a clear progression</h3>
+            <p className="mt-1 text-sm text-muted">Move up the ladder — each level maps to a formal-school class.</p>
+            <div className="mt-5 grid gap-5 sm:grid-cols-3">
+              {[
+                { level: "Level A", equiv: "Class 3", note: "Foundation", n: "01" },
+                { level: "Level B", equiv: "Class 5", note: "Primary", n: "02" },
+                { level: "Level C", equiv: "Class 8", note: "Upper primary", n: "03" },
+              ].map((l) => (
+                <div key={l.level} className="group relative overflow-hidden rounded-2xl border border-line bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-saffron/40 hover:shadow-lg">
+                  <span aria-hidden className="absolute -right-3 -top-3 font-display text-6xl font-extrabold text-line/60 transition group-hover:text-saffron/20">{l.n}</span>
+                  <span className="relative inline-flex rounded-full bg-saffron/10 px-3 py-1 text-xs font-bold uppercase tracking-wide text-saffron-600">{l.note}</span>
+                  <div className="relative mt-3 font-display text-2xl font-extrabold text-ink">{l.level}</div>
+                  <p className="relative mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-muted">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                    Equivalent to {l.equiv}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

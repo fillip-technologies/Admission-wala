@@ -14,9 +14,21 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: BACKEND,
-        changeOrigin: true,   
-        secure: true,         
-        cookieDomainRewrite: 'localhost', 
+        changeOrigin: true,
+        secure: true,
+        cookieDomainRewrite: 'localhost',
+        // Render free tier cold-starts on idle; give it time before giving up.
+        timeout: 60000,
+        proxyTimeout: 60000,
+        configure: (proxy) => {
+          proxy.on('error', (err, _req, res) => {
+            console.warn('[vite proxy] backend unreachable/slow:', err.code || err.message)
+            if (res && !res.headersSent && res.writeHead) {
+              res.writeHead(504, { 'Content-Type': 'application/json' })
+              res.end(JSON.stringify({ error: 'Backend waking up, please retry.' }))
+            }
+          })
+        },
       },
     },
   },
